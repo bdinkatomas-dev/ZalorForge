@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zalorforge-check — Calendar & Tasks</title>
     <style>
-        :root {
+        :root[data-theme="dark"] {
             --bg-color: #0f1117;
             --surface-color: #161b22;
             --surface-hover: #1f242c;
@@ -13,8 +13,22 @@
             --text-secondary: #8b949e;
             --border-color: #30363d;
             --accent-color: #58a6ff;
+            --event-color: #d29922;
             --success-color: #238636;
             --danger-color: #ff7b72;
+        }
+
+        :root[data-theme="light"] {
+            --bg-color: #f6f8fa;
+            --surface-color: #ffffff;
+            --surface-hover: #f3f4f6;
+            --text-color: #24292f;
+            --text-secondary: #57606a;
+            --border-color: #d0d7de;
+            --accent-color: #0969da;
+            --event-color: #9a6700;
+            --success-color: #1a7f37;
+            --danger-color: #cf222e;
         }
 
         * {
@@ -31,6 +45,7 @@
             height: 100vh;
             height: 100dvh;
             overflow: hidden;
+            transition: background-color 0.2s, color 0.2s;
         }
 
         .app-container {
@@ -41,7 +56,7 @@
             position: relative;
         }
 
-        /* Sidebar / Task Management */
+        /* Sidebar / Management Panel */
         .sidebar {
             width: 400px;
             background-color: var(--surface-color);
@@ -51,7 +66,7 @@
             padding: 24px;
             gap: 20px;
             z-index: 20;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, border-color 0.2s;
         }
 
         .brand {
@@ -66,7 +81,55 @@
             letter-spacing: -0.3px;
         }
 
-        .task-form {
+        .settings-bar {
+            display: flex;
+            gap: 8px;
+        }
+
+        .settings-btn {
+            flex: 1;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .settings-btn:hover {
+            border-color: var(--accent-color);
+        }
+
+        .type-selector {
+            display: flex;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 3px;
+        }
+
+        .type-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .type-btn.active {
+            background: var(--surface-hover);
+            color: var(--text-color);
+        }
+
+        .form-panel {
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -76,7 +139,7 @@
             border-radius: 10px;
         }
 
-        .task-input-group {
+        .input-group {
             display: flex;
             gap: 8px;
         }
@@ -97,9 +160,9 @@
             border-color: var(--accent-color);
         }
 
-        button {
+        button.action-btn {
             background-color: var(--accent-color);
-            color: #0d1117;
+            color: var(--bg-color);
             border: none;
             padding: 10px 16px;
             border-radius: 6px;
@@ -109,11 +172,11 @@
             transition: opacity 0.2s;
         }
 
-        button:hover {
+        button.action-btn:hover {
             opacity: 0.9;
         }
 
-        .task-list {
+        .items-list {
             flex-grow: 1;
             overflow-y: auto;
             display: flex;
@@ -122,7 +185,7 @@
             padding-right: 4px;
         }
 
-        .task-item {
+        .item-card {
             background-color: var(--bg-color);
             border: 1px solid var(--border-color);
             padding: 12px;
@@ -134,29 +197,31 @@
             transition: border-color 0.2s;
         }
 
-        .task-item:hover {
+        .item-card:hover {
             border-color: var(--text-secondary);
         }
 
-        .task-item.completed span {
+        .item-card.completed span {
             text-decoration: line-through;
             color: var(--text-secondary);
         }
 
-        .task-actions {
+        .item-actions {
             display: flex;
             gap: 6px;
         }
 
-        .task-actions button {
+        .item-actions button {
             background: transparent;
             color: var(--text-secondary);
             border: 1px solid var(--border-color);
             padding: 5px 10px;
             font-size: 11px;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
-        .task-actions button:hover {
+        .item-actions button:hover {
             color: var(--danger-color);
             border-color: var(--danger-color);
         }
@@ -169,6 +234,7 @@
             padding: 24px;
             overflow-y: auto;
             background-color: var(--bg-color);
+            transition: background-color 0.2s;
         }
 
         .calendar-header {
@@ -200,11 +266,12 @@
             color: var(--text-color);
             border: 1px solid var(--border-color);
             padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
         }
 
         .calendar-nav button:hover {
             border-color: var(--accent-color);
-            opacity: 1;
         }
 
         .weekdays {
@@ -236,12 +303,12 @@
             flex-direction: column;
             gap: 6px;
             overflow-y: auto;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, background-color 0.2s;
         }
 
         .day-cell.today {
             border-color: var(--accent-color);
-            background-color: rgba(88, 166, 255, 0.03);
+            background-color: var(--surface-hover);
         }
 
         .day-number {
@@ -254,9 +321,8 @@
             color: var(--accent-color);
         }
 
-        .calendar-task-tag {
+        .calendar-tag {
             background-color: var(--bg-color);
-            border-left: 3px solid var(--accent-color);
             padding: 4px 8px;
             font-size: 11px;
             border-radius: 4px;
@@ -264,23 +330,28 @@
             overflow: hidden;
             text-overflow: ellipsis;
             cursor: pointer;
-            border-top: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
+            border: 1px solid var(--border-color);
             transition: opacity 0.2s;
         }
 
-        .calendar-task-tag:hover {
-            border-color: var(--accent-color);
+        .calendar-tag.task {
+            border-left: 3px solid var(--accent-color);
         }
 
-        .calendar-task-tag.completed {
+        .calendar-tag.event {
+            border-left: 3px solid var(--event-color);
+        }
+
+        .calendar-tag:hover {
+            border-color: var(--text-secondary);
+        }
+
+        .calendar-tag.completed {
             opacity: 0.35;
             text-decoration: line-through;
             border-left-color: var(--text-secondary);
         }
 
-        /* Mobile Controls */
         .mobile-only {
             display: none;
         }
@@ -326,24 +397,37 @@
 <body>
 
     <div class="app-container">
-        <!-- Sidebar for Tasks -->
+        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="brand">
                 <h2>Zalorforge-check</h2>
-                <button class="mobile-only" onclick="toggleMobileSidebar()" style="background:transparent; color:var(--text-color); border:1px solid var(--border-color); padding:4px 10px;">✕</button>
+                <button class="mobile-only" onclick="toggleMobileSidebar()" style="background:transparent; color:var(--text-color); border:1px solid var(--border-color); padding:4px 10px; border-radius:6px; cursor:pointer;">✕</button>
             </div>
             
-            <div class="task-form">
-                <div class="task-input-group">
-                    <input type="text" id="taskTitle" placeholder="Task title...">
+            <div class="settings-bar">
+                <button class="settings-btn" id="langBtn" onclick="toggleLanguage()">CZ / EN</button>
+                <button class="settings-btn" id="themeBtn" onclick="toggleTheme()">Dark / Light</button>
+            </div>
+
+            <div class="type-selector">
+                <button class="type-btn active" id="typeTaskBtn" onclick="switchInputType('task')">Task</button>
+                <button class="type-btn" id="typeEventBtn" onclick="switchInputType('event')">Event</button>
+            </div>
+
+            <div class="form-panel">
+                <div class="input-group">
+                    <input type="text" id="itemTitle" data-i18n-placeholder="titlePlaceholder" placeholder="Title (e.g. Tomášek narozeniny)...">
                 </div>
-                <div class="task-input-group">
-                    <input type="date" id="taskDate">
-                    <button onclick="addTask()">Add Task</button>
+                <div class="input-group" id="timeGroup" style="display: none;">
+                    <input type="time" id="itemTime">
+                </div>
+                <div class="input-group">
+                    <input type="date" id="itemDate">
+                    <button class="action-btn" id="addBtnText" onclick="addItem()">Add</button>
                 </div>
             </div>
 
-            <div class="task-list" id="taskList"></div>
+            <div class="items-list" id="itemsList"></div>
         </div>
 
         <!-- Main Calendar View -->
@@ -351,17 +435,17 @@
             <div class="calendar-header">
                 <h1 id="monthYearDisplay"></h1>
                 <div class="header-controls">
-                    <button class="mobile-only" onclick="toggleMobileSidebar()" style="background-color: var(--surface-color); color: var(--text-color); border: 1px solid var(--border-color);">Tasks ☰</button>
+                    <button class="mobile-only" onclick="toggleMobileSidebar()" style="background-color: var(--surface-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 6px; cursor: pointer;">Menu ☰</button>
                     <div class="calendar-nav">
-                        <button onclick="changeMonth(-1)">Prev</button>
-                        <button onclick="currentMonthView()">Today</button>
-                        <button onclick="changeMonth(1)">Next</button>
+                        <button onclick="changeMonth(-1)" id="prevBtnText">Prev</button>
+                        <button onclick="currentMonthView()" id="todayBtnText">Today</button>
+                        <button onclick="changeMonth(1)" id="nextBtnText">Next</button>
                     </div>
                 </div>
             </div>
 
-            <div class="weekdays">
-                <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+            <div class="weekdays" id="weekdaysGrid">
+                <!-- Days will be populated via JS -->
             </div>
 
             <div class="days-grid" id="daysGrid"></div>
@@ -369,51 +453,130 @@
     </div>
 
     <script>
-        let tasks = JSON.parse(localStorage.getItem('zalorforge_tasks')) || [];
+        // Localization dictionaries
+        const i18n = {
+            cs: {
+                task: "Úkol",
+                event: "Událost",
+                add: "Přidat",
+                prev: "Předchozí",
+                today: "Dnes",
+                next: "Další",
+                done: "Hotovo",
+                undo: "Zpět",
+                del: "Smazat",
+                titlePlaceholder: "Název (např. Tomášek narozeniny)...",
+                alertTitle: "Zadejte prosím název.",
+                weekdays: ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"],
+                months: ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"]
+            },
+            en: {
+                task: "Task",
+                event: "Event",
+                add: "Add",
+                prev: "Prev",
+                today: "Today",
+                next: "Next",
+                done: "Done",
+                undo: "Undo",
+                del: "Del",
+                titlePlaceholder: "Title (e.g. Tomášek birthday)...",
+                alertTitle: "Please enter a title.",
+                weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+            }
+        };
+
+        let currentLang = localStorage.getItem('zalorforge_lang') || 'cs';
+        let currentTheme = localStorage.getItem('zalorforge_theme') || 'dark';
+        
+        let items = JSON.parse(localStorage.getItem('zalorforge_items')) || [];
+        let activeType = 'task';
         let today = new Date();
         let currentMonth = today.getMonth();
         let currentYear = today.getFullYear();
 
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        // Apply saved theme on load
+        document.documentElement.setAttribute('data-theme', currentTheme);
 
-        function saveTasks() {
-            localStorage.setItem('zalorforge_tasks', JSON.stringify(tasks));
+        function saveSettings() {
+            localStorage.setItem('zalorforge_lang', currentLang);
+            localStorage.setItem('zalorforge_theme', currentTheme);
+            localStorage.setItem('zalorforge_items', JSON.stringify(items));
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            saveSettings();
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'cs' ? 'en' : 'cs';
+            saveSettings();
+            render();
         }
 
         function toggleMobileSidebar() {
             document.getElementById('sidebar').classList.toggle('mobile-open');
         }
 
-        function addTask() {
-            const titleInput = document.getElementById('taskTitle');
-            const dateInput = document.getElementById('taskDate');
-            
-            if (!titleInput.value.trim()) return alert('Please enter a task name.');
+        function switchInputType(type) {
+            activeType = type;
+            const taskBtn = document.getElementById('typeTaskBtn');
+            const eventBtn = document.getElementById('typeEventBtn');
+            const timeGroup = document.getElementById('timeGroup');
 
-            const newTask = {
+            const t = i18n[currentLang];
+            taskBtn.textContent = t.task;
+            eventBtn.textContent = t.event;
+
+            if (type === 'task') {
+                taskBtn.classList.add('active');
+                eventBtn.classList.remove('active');
+                timeGroup.style.display = 'none';
+            } else {
+                eventBtn.classList.add('active');
+                taskBtn.classList.remove('active');
+                timeGroup.style.display = 'flex';
+            }
+        }
+
+        function addItem() {
+            const titleInput = document.getElementById('itemTitle');
+            const dateInput = document.getElementById('itemDate');
+            const timeInput = document.getElementById('itemTime');
+            const t = i18n[currentLang];
+            
+            if (!titleInput.value.trim()) return alert(t.alertTitle);
+
+            const newItem = {
                 id: Date.now(),
+                type: activeType,
                 title: titleInput.value.trim(),
                 date: dateInput.value || new Date().toISOString().split('T')[0],
+                time: activeType === 'event' ? (timeInput.value || '') : '',
                 completed: false
             };
 
-            tasks.push(newTask);
-            saveTasks();
+            items.push(newItem);
+            saveSettings();
             
             titleInput.value = '';
+            timeInput.value = '';
             dateInput.value = '';
             render();
         }
 
-        function toggleTask(id) {
-            tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
-            saveTasks();
+        function toggleComplete(id) {
+            items = items.map(item => item.id === id ? { ...item, completed: !item.completed } : item);
+            saveSettings();
             render();
         }
 
-        function deleteTask(id) {
-            tasks = tasks.filter(t => t.id !== id);
-            saveTasks();
+        function deleteItem(id) {
+            items = items.filter(item => item.id !== id);
+            saveSettings();
             render();
         }
 
@@ -436,38 +599,60 @@
         }
 
         function render() {
-            renderTasks();
+            const t = i18n[currentLang];
+
+            // Update static texts
+            document.getElementById('typeTaskBtn').textContent = t.task;
+            document.getElementById('typeEventBtn').textContent = t.event;
+            document.getElementById('addBtnText').textContent = t.add;
+            document.getElementById('prevBtnText').textContent = t.prev;
+            document.getElementById('todayBtnText').textContent = t.today;
+            document.getElementById('nextBtnText').textContent = t.next;
+            document.getElementById('itemTitle').placeholder = t.titlePlaceholder;
+            
+            // Render weekdays header
+            const weekdaysGrid = document.getElementById('weekdaysGrid');
+            weekdaysGrid.innerHTML = t.weekdays.map(d => `<div>${d}</div>`).join('');
+
+            renderList();
             renderCalendar();
         }
 
-        function renderTasks() {
-            const taskList = document.getElementById('taskList');
-            taskList.innerHTML = '';
+        function renderList() {
+            const listContainer = document.getElementById('itemsList');
+            listContainer.innerHTML = '';
+            const t = i18n[currentLang];
 
-            const sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
+            const sortedItems = [...items].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            sortedTasks.forEach(task => {
+            sortedItems.forEach(item => {
                 const div = document.createElement('div');
-                div.className = `task-item ${task.completed ? 'completed' : ''}`;
+                div.className = `item-card ${item.completed ? 'completed' : ''}`;
+                
+                const badgeText = item.type === 'event' ? (item.time ? `${item.date} • ${item.time}` : item.date) : item.date;
+
                 div.innerHTML = `
                     <div style="overflow: hidden; padding-right: 8px;">
-                        <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;">${task.title}</span>
-                        <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${task.date}</div>
+                        <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;">
+                            ${item.type === 'event' ? '📅 ' : '✔️ '}${item.title}
+                        </span>
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${badgeText}</div>
                     </div>
-                    <div class="task-actions" style="flex-shrink: 0;">
-                        <button onclick="toggleTask(${task.id})">${task.completed ? 'Undo' : 'Done'}</button>
-                        <button onclick="deleteTask(${task.id})">Del</button>
+                    <div class="item-actions" style="flex-shrink: 0;">
+                        ${item.type === 'task' ? `<button onclick="toggleComplete(${item.id})">${item.completed ? t.undo : t.done}</button>` : ''}
+                        <button onclick="deleteItem(${item.id})">${t.del}</button>
                     </div>
                 `;
-                taskList.appendChild(div);
+                listContainer.appendChild(div);
             });
         }
 
         function renderCalendar() {
             const display = document.getElementById('monthYearDisplay');
             const grid = document.getElementById('daysGrid');
+            const t = i18n[currentLang];
             
-            display.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            display.textContent = `${t.months[currentMonth]} ${currentYear}`;
             grid.innerHTML = '';
 
             let firstDayIndex = (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
@@ -494,14 +679,17 @@
 
                 cell.innerHTML = `<div class="day-number">${day}</div>`;
 
-                const dayTasks = tasks.filter(t => t.date === dateString);
-                dayTasks.forEach(t => {
+                const dayItems = items.filter(i => i.date === dateString);
+                dayItems.forEach(item => {
                     const tag = document.createElement('div');
-                    tag.className = `calendar-task-tag ${t.completed ? 'completed' : ''}`;
-                    tag.textContent = t.title;
+                    tag.className = `calendar-tag ${item.type} ${item.completed ? 'completed' : ''}`;
+                    
+                    const labelPrefix = item.type === 'event' && item.time ? `${item.time} ` : '';
+                    tag.textContent = labelPrefix + item.title;
+                    
                     tag.onclick = (e) => {
                         e.stopPropagation();
-                        toggleTask(t.id);
+                        if (item.type === 'task') toggleComplete(item.id);
                     };
                     cell.appendChild(tag);
                 });

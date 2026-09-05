@@ -1,19 +1,40 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZalorForge — Ecosystem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zalorforge — Home & Hub</title>
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --surface-color: #161b22;
-            --surface-hover: #1f242c;
-            --text-color: #f0f6fc;
-            --text-secondary: #8b949e;
-            --border-color: #30363d;
-            --accent-color: #58a6ff;
-            --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        :root[data-theme="dark"] {
+            --bg-color: #0b0f19;
+            --surface-color: #131b2e;
+            --surface-hover: #1c2640;
+            --text-color: #f3f6fc;
+            --text-secondary: #8b9ab3;
+            --border-color: #26334f;
+            --accent-color: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6, #6366f1);
+            --event-color: #f59e0b;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            --modal-bg: rgba(11, 15, 25, 0.8);
+        }
+
+        :root[data-theme="light"] {
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --surface-hover: #f1f5f9;
+            --text-color: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --accent-color: #2563eb;
+            --accent-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
+            --event-color: #d97706;
+            --danger-color: #dc2626;
+            --success-color: #059669;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --modal-bg: rgba(15, 23, 42, 0.5);
         }
 
         * {
@@ -21,302 +42,566 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            justify-content: space-between;
-            overflow-x: hidden;
-        }
-
-        /* Animace při načtení */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        header {
-            display: flex;
-            justify-content: flex-end;
-            padding: 20px 32px;
-            gap: 20px;
+            justify-content: center;
             align-items: center;
-            animation: fadeInDown 0.6s ease-out;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        header a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 500;
-            transition: color 0.2s;
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            max-width: 1500px;
+            background-color: var(--bg-color);
+            position: relative;
+            overflow: hidden;
         }
 
-        header a:hover {
-            color: var(--accent-color);
-        }
-
-        main {
+        /* Sidebar / Navigation Hub */
+        .sidebar {
+            width: 380px;
+            background-color: var(--surface-color);
+            border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
+            padding: 24px;
+            gap: 20px;
+            z-index: 10;
+            flex-shrink: 0;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .brand {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h2 {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .settings-bar {
+            display: flex;
+            gap: 10px;
+        }
+
+        .settings-btn {
+            flex: 1;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
             align-items: center;
             justify-content: center;
-            flex-grow: 1;
-            padding: 0 20px 40px 20px;
-            animation: fadeInUp 0.8s ease-out;
+            gap: 6px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .logo-container {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .logo {
-            font-size: clamp(42px, 8vw, 64px);
-            font-weight: 700;
-            letter-spacing: -1.5px;
-            color: var(--text-color);
-            user-select: none;
-            margin-bottom: 8px;
-        }
-
-        .tagline {
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        .search-box {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            max-width: 600px;
-            height: 50px;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 28px;
-            padding: 0 18px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-        }
-
-        .search-box:hover, .search-box:focus-within {
+        .settings-btn:hover {
             border-color: var(--accent-color);
-            box-shadow: 0 4px 20px rgba(88, 166, 255, 0.15);
+            background: var(--surface-hover);
             transform: translateY(-1px);
         }
 
-        .search-icon {
-            width: 20px;
-            height: 20px;
-            fill: var(--text-secondary);
-            margin-right: 14px;
-            transition: fill 0.2s;
-        }
-
-        .search-box:focus-within .search-icon {
-            fill: var(--accent-color);
-        }
-
-        .search-input {
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             flex-grow: 1;
-            border: none;
-            outline: none;
-            background: transparent;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
             color: var(--text-color);
-            font-size: 16px;
-        }
-
-        .search-input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        /* Sekce pro ikony */
-        .content-sections {
-            width: 100%;
-            max-width: 680px;
-            margin-top: 48px;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-        }
-
-        .section-group {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .section-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-secondary);
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-size: 14px;
             font-weight: 600;
-            padding-left: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 16px;
+        .nav-item:hover, .nav-item.active {
+            border-color: var(--accent-color);
+            background: var(--surface-hover);
+            transform: translateX(4px);
+            box-shadow: var(--shadow);
         }
 
-        .shortcut-item {
+        .nav-item span {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--accent-color);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Main Content Workspace */
+        .main-content {
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            padding: 12px 8px;
-            background-color: var(--surface-color);
+            padding: 32px;
+            overflow-y: auto;
+            background-color: var(--bg-color);
+            gap: 24px;
+        }
+
+        .hero-banner {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: var(--accent-gradient);
+            filter: blur(60px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .hero-banner h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-banner p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            max-width: 600px;
+        }
+
+        .widgets-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .widget-card {
+            background: var(--surface-color);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .shortcut-item:hover {
-            background-color: var(--surface-hover);
-            border-color: var(--accent-color);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        }
-
-        .shortcut-icon-wrapper {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            padding: 20px;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 8px;
-            overflow: hidden;
-            background-color: rgba(255, 255, 255, 0.03);
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.25s ease;
         }
 
-        .shortcut-icon-wrapper img {
-            width: 22px;
-            height: 22px;
-            object-fit: contain;
+        .widget-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
-        .shortcut-name {
-            font-size: 12px;
-            color: var(--text-color);
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-            font-weight: 500;
-        }
-
-        footer {
-            background-color: var(--surface-color);
-            color: var(--text-secondary);
-            font-size: 12px;
-            border-top: 1px solid var(--border-color);
-            padding: 16px 32px;
-        }
-
-        .footer-row {
+        .widget-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-links a {
+            font-size: 14px;
+            font-weight: 700;
             color: var(--text-secondary);
-            text-decoration: none;
+        }
+
+        .widget-value {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 75px;
+            left: 50%;
+            transform: translateX(-50%) translateY(50px);
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            z-index: 2000;
+            opacity: 0;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Mobile Bottom Navigation Bar */
+        .mobile-nav-bar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            background-color: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .mobile-nav-item {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
             transition: color 0.2s;
         }
 
-        .footer-links a:hover {
+        .mobile-nav-item svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .mobile-nav-item.active {
             color: var(--accent-color);
+        }
+
+        /* Responsive Breakpoints & Mobile Adaptability */
+        @media (max-width: 900px) {
+            body {
+                align-items: flex-start;
+            }
+
+            .app-container {
+                flex-direction: column;
+                height: calc(100vh - 65px);
+                height: calc(100dvh - 65px);
+            }
+
+            .sidebar {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border-right: none;
+                display: none;
+                padding: 16px;
+                gap: 16px;
+            }
+
+            .sidebar.mobile-active {
+                display: flex;
+            }
+
+            .main-content {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                padding: 16px;
+                display: none;
+            }
+
+            .main-content.mobile-active {
+                display: flex;
+            }
+
+            .mobile-nav-bar {
+                display: flex;
+            }
+
+            .widgets-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <a href="https://github.com/zalorforge" target="_blank">GitHub</a>
-        <a href="#ecosystem">Ecosystem</a>
-    </header>
-
-    <main>
-        <div class="logo-container">
-            <h1 class="logo">ZalorForge</h1>
-            <p class="tagline">Ethical • High-Performance • Sustainable Ecosystem</p>
-        </div>
-
-        <div class="search-box">
-            <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            <input type="text" class="search-input" placeholder="Search apps, commands or documents..." autofocus>
-        </div>
-
-        <div class="content-sections">
-            <div class="section-group">
-                <div class="section-title">Applications</div>
-                <div id="apps-grid" class="grid-container"></div>
+    <div class="app-container">
+        <!-- Sidebar / Hub Menu -->
+        <div class="sidebar mobile-active" id="sidebarPanel">
+            <div class="brand">
+                <h2 id="brandTitle">Zalorforge Hub</h2>
             </div>
-
-            <div class="section-group">
-                <div class="section-title">Contributors</div>
-                <div id="contributors-grid" class="grid-container"></div>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <div class="footer-row">
-            <span>© ZalorForge Project • Zero-Cost Infrastructure</span>
-            <div class="footer-links">
-                <a href="https://turso.tech" target="_blank">Turso DB</a>
-                <a href="https://pages.cloudflare.com" target="_blank">Cloudflare</a>
-                <a href="https://render.com" target="_blank">Render API</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Načtení dat -->
-    <script src="apps.js"></script>
-    <script src="contributors.js"></script>
-    <script>
-        function renderGrid(containerId, items) {
-            const container = document.getElementById(containerId);
-            if (!container || !Array.isArray(items)) return;
             
-            container.innerHTML = items.map(item => `
-                <a href="${item.url}" class="shortcut-item" target="_blank" rel="noopener noreferrer">
-                    <div class="shortcut-icon-wrapper">
-                        <img src="${item.logo}" alt="${item.name}" onerror="this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">
+            <div class="settings-bar">
+                <button class="settings-btn" onclick="toggleLanguage()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <span id="langBtnText">CZ / EN</span>
+                </button>
+                <button class="settings-btn" onclick="toggleTheme()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <span id="themeBtnText">Theme</span>
+                </button>
+            </div>
+
+            <div class="nav-menu">
+                <div class="nav-item active" onclick="switchSection('home')">
+                    <span>
+                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span id="navHome">Domů</span>
+                    </span>
+                    <svg style="width: 14px; height: 14px; stroke: var(--text-secondary);" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+                <div class="nav-item" onclick="navigateApp('check')">
+                    <span>
+                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span id="navCalendar">Kalendář & Úkoly</span>
+                    </span>
+                    <svg style="width: 14px; height: 14px; stroke: var(--text-secondary);" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+                <div class="nav-item" onclick="navigateApp('settings')">
+                    <span>
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        <span id="navSettings">Nastavení systému</span>
+                    </span>
+                    <svg style="width: 14px; height: 14px; stroke: var(--text-secondary);" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Workspace View -->
+        <div class="main-content" id="workspacePanel">
+            <div class="hero-banner">
+                <h1 id="heroTitle">Vítejte v Zalorforge</h1>
+                <p id="heroDesc">Centrální hub pro správu vašich úkolů, událostí a osobního workflow s plnou adaptací na mobilní i desktopové zařízení.</p>
+            </div>
+
+            <div class="widgets-grid">
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span id="widgetTasksLabel">Aktivní úkoly</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                     </div>
-                    <span class="shortcut-name">${item.name}</span>
-                </a>
-            `).join('');
+                    <div class="widget-value" id="activeTasksCount">0</div>
+                </div>
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span id="widgetEventsLabel">Nadcházející události</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <div class="widget-value" id="activeEventsCount">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation Bar -->
+        <div class="mobile-nav-bar">
+            <button class="mobile-nav-item active" id="mobNavHome" onclick="switchMobileTab('home')">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span id="mobHomeText">Domů</span>
+            </button>
+            <button class="mobile-nav-item" id="mobNavCalendar" onclick="navigateApp('check')">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span id="mobCalText">Kalendář</span>
+            </button>
+            <button class="mobile-nav-item" id="mobNavMenu" onclick="switchMobileTab('menu')">
+                <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                <span id="mobMenuText">Menu</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification Element -->
+    <div class="toast" id="toastMessage"></div>
+
+    <script>
+        const i18n = {
+            cs: {
+                brand: "Zalorforge Hub",
+                navHome: "Domů",
+                navCalendar: "Kalendář & Úkoly",
+                navSettings: "Nastavení systému",
+                heroTitle: "Vítejte v Zalorforge",
+                heroDesc: "Centrální hub pro správu vašich úkolů, událostí a osobního workflow s plnou adaptací na mobilní i desktopové zařízení.",
+                widgetTasks: "Aktivní úkoly",
+                widgetEvents: "Nadcházející události",
+                toastNav: "Přechod do modulu...",
+                mobHome: "Domů",
+                mobCal: "Kalendář",
+                mobMenu: "Menu"
+            },
+            en: {
+                brand: "Zalorforge Hub",
+                navHome: "Home",
+                navCalendar: "Calendar & Tasks",
+                navSettings: "System Settings",
+                heroTitle: "Welcome to Zalorforge",
+                heroDesc: "Central hub for managing your tasks, events, and personal workflow with full adaptation for mobile and desktop devices.",
+                widgetTasks: "Active Tasks",
+                widgetEvents: "Upcoming Events",
+                toastNav: "Navigating to module...",
+                mobHome: "Home",
+                mobCal: "Calendar",
+                mobMenu: "Menu"
+            }
+        };
+
+        let currentLang = localStorage.getItem('zalorforge_lang') || 'cs';
+        let currentTheme = localStorage.getItem('zalorforge_theme') || 'dark';
+        let items = JSON.parse(localStorage.getItem('zalorforge_items')) || [];
+
+        document.documentElement.setAttribute('data-theme', currentTheme);
+
+        function showToast(message) {
+            const toast = document.getElementById('toastMessage');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof appsData !== 'undefined') renderGrid('apps-grid', appsData);
-            if (typeof contributorsData !== 'undefined') renderGrid('contributors-grid', contributorsData);
-        });
+        function saveSettings() {
+            localStorage.setItem('zalorforge_lang', currentLang);
+            localStorage.setItem('zalorforge_theme', currentTheme);
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            saveSettings();
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'cs' ? 'en' : 'cs';
+            saveSettings();
+            render();
+        }
+
+        function switchSection(section) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            if (window.innerWidth <= 900) {
+                switchMobileTab('home');
+            }
+        }
+
+        function switchMobileTab(tab) {
+            const sidebar = document.getElementById('sidebarPanel');
+            const workspace = document.getElementById('workspacePanel');
+            const mobHome = document.getElementById('mobNavHome');
+            const mobMenu = document.getElementById('mobNavMenu');
+
+            if (tab === 'home') {
+                sidebar.classList.remove('mobile-active');
+                workspace.classList.add('mobile-active');
+                mobHome.classList.add('active');
+                mobMenu.classList.remove('active');
+            } else if (tab === 'menu') {
+                sidebar.classList.add('mobile-active');
+                workspace.classList.remove('mobile-active');
+                mobMenu.classList.add('active');
+                mobHome.classList.remove('active');
+            }
+        }
+
+        function navigateApp(app) {
+            const t = i18n[currentLang];
+            showToast(t.toastNav);
+            setTimeout(() => {
+                if (app === 'check') {
+                    // Integrace s předchozím modulem kalendáře (check)
+                    window.location.href = '#check'; 
+                } else {
+                    showToast("Nastavení k dispozici v příští verzi.");
+                }
+            }, 300);
+        }
+
+        function render() {
+            const t = i18n[currentLang];
+            
+            document.getElementById('brandTitle').textContent = t.brand;
+            document.getElementById('navHome').textContent = t.navHome;
+            document.getElementById('navCalendar').textContent = t.navCalendar;
+            document.getElementById('navSettings').textContent = t.navSettings;
+            document.getElementById('heroTitle').textContent = t.heroTitle;
+            document.getElementById('heroDesc').textContent = t.heroDesc;
+            document.getElementById('widgetTasksLabel').textContent = t.widgetTasks;
+            document.getElementById('widgetEventsLabel').textContent = t.widgetEvents;
+            document.getElementById('mobHomeText').textContent = t.mobHome;
+            document.getElementById('mobCalText').textContent = t.mobCal;
+            document.getElementById('mobMenuText').textContent = t.mobMenu;
+
+            // Výpočet widgetů z uložených položek
+            const activeTasks = items.filter(i => i.type === 'task' && !i.completed).length;
+            const activeEvents = items.filter(i => i.type === 'event').length;
+
+            document.getElementById('activeTasksCount').textContent = activeTasks;
+            document.getElementById('activeEventsCount').textContent = activeEvents;
+        }
+
+        render();
     </script>
 </body>
 </html>

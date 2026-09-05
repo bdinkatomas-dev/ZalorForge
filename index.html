@@ -277,7 +277,7 @@
             transform: scale(1.05);
         }
 
-        /* Upraveno pro správné renderování SVG prvků vložených přes odkaz / inline */
+        /* Stylování pro SVG ikony a obrázky uvnitř kontejneru */
         .shortcut-icon-wrapper img,
         .shortcut-icon-wrapper svg {
             width: 28px;
@@ -432,7 +432,6 @@
         </div>
     </footer>
 
-    <!-- Načtení dat -->
     <script src="apps.js"></script>
     <script src="contributors.js"></script>
     <script>
@@ -488,7 +487,7 @@
             updateUIStrings();
         }
 
-        function renderGrid(containerId, items) {
+        async function renderGrid(containerId, items) {
             const container = document.getElementById(containerId);
             if (!container || !Array.isArray(items)) return;
             
@@ -498,27 +497,59 @@
                 return;
             }
 
-            container.innerHTML = items.map((item, index) => {
-                let logoContent = '';
-                // Rozpoznání, zda logo je přímá SVG cesta/odkaz končící na .svg nebo obsahující data-svg / url
-                if (item.logo && (item.logo.trim().startsWith('<svg') || item.logo.trim().startsWith('data:image/svg+xml'))) {
-                    logoContent = item.logo;
-                } else if (item.logo && item.logo.toLowerCase().endsWith('.svg')) {
-                    // Pokud jde o URL na externí soubor SVG, načteme ho jako obrázek s podporou fallbacku
-                    logoContent = `<img src="${item.logo}" alt="${item.name}" onerror="this.onerror=null; this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">`;
-                } else {
-                    logoContent = `<img src="${item.logo || 'https://api.iconify.design/lucide:box.svg?color=%238b949e'}" alt="${item.name}" onerror="this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">`;
-                }
+            // Vytvoření elementů pro jednotlivé položky
+            container.innerHTML = '';
+            for (let index = 0; index < items.length; index++) {
+                const item = items[index];
+                
+                const card = document.createElement('a');
+                card.href = item.url;
+                card.className = 'shortcut-item';
+                card.target = '_blank';
+                card.rel = 'noopener noreferrer';
+                card.style.animationDelay = `${index * 0.04}s`;
 
-                return `
-                    <a href="${item.url}" class="shortcut-item" target="_blank" rel="noopener noreferrer" style="animation-delay: ${index * 0.04}s">
-                        <div class="shortcut-icon-wrapper">
-                            ${logoContent}
-                        </div>
-                        <span class="shortcut-name">${item.name}</span>
-                    </a>
-                `;
-            }).join('');
+                const iconWrapper = document.createElement('div');
+                iconWrapper.className = 'shortcut-icon-wrapper';
+
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'shortcut-name';
+                nameSpan.textContent = item.name;
+
+                card.appendChild(iconWrapper);
+                card.appendChild(nameSpan);
+                container.appendChild(card);
+
+                // Zpracování loga (podpora SVG souborů, URL i Iconify/PNG)
+                if (item.logo) {
+                    const logoUrl = item.logo.trim();
+                    if (logoUrl.startsWith('<svg')) {
+                        iconWrapper.innerHTML = logoUrl;
+                    } else if (logoUrl.toLowerCase().endsWith('.svg') || logoUrl.includes('iconify.design')) {
+                        // Pokusíme se stáhnout SVG přes fetch pro přímé vložení (vyřeší CORS a problémy s vykreslováním v img)
+                        try {
+                            const response = await fetch(logoUrl);
+                            if (response.ok) {
+                                const svgText = await response.text();
+                                if (svgText.trim().startsWith('<svg')) {
+                                    iconWrapper.innerHTML = svgText;
+                                } else {
+                                    throw new Error('Not valid SVG');
+                                }
+                            } else {
+                                throw new Error('Fetch failed');
+                            }
+                        } catch (e) {
+                            // Fallback na klasický img tag, pokud fetch selže
+                            iconWrapper.innerHTML = `<img src="${logoUrl}" alt="${item.name}" onerror="this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">`;
+                        }
+                    } else {
+                        iconWrapper.innerHTML = `<img src="${logoUrl}" alt="${item.name}" onerror="this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">`;
+                    }
+                } else {
+                    iconWrapper.innerHTML = `<img src="https://api.iconify.design/lucide:box.svg?color=%238b949e" alt="${item.name}">`;
+                }
+            }
         }
 
         function filterAndRender() {

@@ -277,7 +277,6 @@
             transform: scale(1.05);
         }
 
-        /* Stylování pro SVG ikony a obrázky uvnitř kontejneru */
         .shortcut-icon-wrapper img,
         .shortcut-icon-wrapper svg {
             width: 28px;
@@ -487,7 +486,7 @@
             updateUIStrings();
         }
 
-        async function renderGrid(containerId, items) {
+        function renderGrid(containerId, items) {
             const container = document.getElementById(containerId);
             if (!container || !Array.isArray(items)) return;
             
@@ -497,59 +496,27 @@
                 return;
             }
 
-            // Vytvoření elementů pro jednotlivé položky
-            container.innerHTML = '';
-            for (let index = 0; index < items.length; index++) {
-                const item = items[index];
-                
-                const card = document.createElement('a');
-                card.href = item.url;
-                card.className = 'shortcut-item';
-                card.target = '_blank';
-                card.rel = 'noopener noreferrer';
-                card.style.animationDelay = `${index * 0.04}s`;
+            container.innerHTML = items.map((item, index) => {
+                let logoMarkup = '';
+                const logo = item.logo ? item.logo.trim() : '';
 
-                const iconWrapper = document.createElement('div');
-                iconWrapper.className = 'shortcut-icon-wrapper';
-
-                const nameSpan = document.createElement('span');
-                nameSpan.className = 'shortcut-name';
-                nameSpan.textContent = item.name;
-
-                card.appendChild(iconWrapper);
-                card.appendChild(nameSpan);
-                container.appendChild(card);
-
-                // Zpracování loga (podpora SVG souborů, URL i Iconify/PNG)
-                if (item.logo) {
-                    const logoUrl = item.logo.trim();
-                    if (logoUrl.startsWith('<svg')) {
-                        iconWrapper.innerHTML = logoUrl;
-                    } else if (logoUrl.toLowerCase().endsWith('.svg') || logoUrl.includes('iconify.design')) {
-                        // Pokusíme se stáhnout SVG přes fetch pro přímé vložení (vyřeší CORS a problémy s vykreslováním v img)
-                        try {
-                            const response = await fetch(logoUrl);
-                            if (response.ok) {
-                                const svgText = await response.text();
-                                if (svgText.trim().startsWith('<svg')) {
-                                    iconWrapper.innerHTML = svgText;
-                                } else {
-                                    throw new Error('Not valid SVG');
-                                }
-                            } else {
-                                throw new Error('Fetch failed');
-                            }
-                        } catch (e) {
-                            // Fallback na klasický img tag, pokud fetch selže
-                            iconWrapper.innerHTML = `<img src="${logoUrl}" alt="${item.name}" onerror="this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">`;
-                        }
-                    } else {
-                        iconWrapper.innerHTML = `<img src="${logoUrl}" alt="${item.name}" onerror="this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">`;
-                    }
+                if (logo.startsWith('<svg')) {
+                    logoMarkup = logo;
+                } else if (logo.length > 0) {
+                    logoMarkup = `<img src="${logo}" alt="${item.name}" onerror="this.onerror=null; this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">`;
                 } else {
-                    iconWrapper.innerHTML = `<img src="https://api.iconify.design/lucide:box.svg?color=%238b949e" alt="${item.name}">`;
+                    logoMarkup = `<img src="https://api.iconify.design/lucide:box.svg?color=%238b949e" alt="${item.name}">`;
                 }
-            }
+
+                return `
+                    <a href="${item.url}" class="shortcut-item" target="_blank" rel="noopener noreferrer" style="animation-delay: ${index * 0.04}s">
+                        <div class="shortcut-icon-wrapper">
+                            ${logoMarkup}
+                        </div>
+                        <span class="shortcut-name">${item.name}</span>
+                    </a>
+                `;
+            }).join('');
         }
 
         function filterAndRender() {

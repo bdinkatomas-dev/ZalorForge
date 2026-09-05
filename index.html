@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zalorforge — Home & Hub</title>
+    <title>Zalorforge</title>
     <style>
         :root[data-theme="dark"] {
             --bg-color: #0b0f19;
@@ -14,11 +14,7 @@
             --border-color: #26334f;
             --accent-color: #3b82f6;
             --accent-gradient: linear-gradient(135deg, #3b82f6, #6366f1);
-            --event-color: #f59e0b;
-            --danger-color: #ef4444;
-            --success-color: #10b981;
-            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-            --modal-bg: rgba(11, 15, 25, 0.8);
+            --shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.6);
         }
 
         :root[data-theme="light"] {
@@ -30,11 +26,7 @@
             --border-color: #e2e8f0;
             --accent-color: #2563eb;
             --accent-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
-            --event-color: #d97706;
-            --danger-color: #dc2626;
-            --success-color: #059669;
             --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            --modal-bg: rgba(15, 23, 42, 0.5);
         }
 
         * {
@@ -62,13 +54,13 @@
             display: flex;
             width: 100%;
             height: 100%;
-            max-width: 1500px;
+            max-width: 1400px;
             background-color: var(--bg-color);
             position: relative;
             overflow: hidden;
         }
 
-        /* Sidebar / Navigation Hub */
+        /* Sidebar */
         .sidebar {
             width: 380px;
             background-color: var(--surface-color);
@@ -76,7 +68,7 @@
             display: flex;
             flex-direction: column;
             padding: 24px;
-            gap: 20px;
+            gap: 16px;
             z-index: 10;
             flex-shrink: 0;
             transition: background-color 0.3s, border-color 0.3s;
@@ -89,7 +81,7 @@
         }
 
         .brand h2 {
-            font-size: 22px;
+            font-size: 21px;
             font-weight: 800;
             letter-spacing: -0.5px;
             background: var(--accent-gradient);
@@ -107,10 +99,10 @@
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 10px;
+            padding: 9px;
             font-size: 12px;
             font-weight: 600;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -125,6 +117,38 @@
             transform: translateY(-1px);
         }
 
+        .search-box-wrapper {
+            position: relative;
+        }
+
+        .search-box-wrapper svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 15px;
+            stroke: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 36px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
         .nav-menu {
             display: flex;
             flex-direction: column;
@@ -133,45 +157,42 @@
             overflow-y: auto;
         }
 
+        .nav-menu::-webkit-scrollbar {
+            width: 4px;
+        }
+        .nav-menu::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
         .nav-item {
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 14px 16px;
-            border-radius: 14px;
+            padding: 12px 14px;
+            border-radius: 12px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .nav-item:hover, .nav-item.active {
+        .nav-item:hover {
             border-color: var(--accent-color);
             background: var(--surface-hover);
-            transform: translateX(4px);
+            transform: translateX(2px);
+        }
+
+        .nav-item.active {
+            border-color: var(--accent-color);
+            background: var(--surface-hover);
             box-shadow: var(--shadow);
         }
 
-        .nav-item span {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-item svg {
-            width: 18px;
-            height: 18px;
-            stroke: var(--accent-color);
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        /* Main Content Workspace */
+        /* Main Content */
         .main-content {
             flex-grow: 1;
             display: flex;
@@ -179,118 +200,73 @@
             padding: 32px;
             overflow-y: auto;
             background-color: var(--bg-color);
-            gap: 24px;
+            animation: fadeIn 0.3s ease;
         }
 
-        .hero-banner {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 32px;
+        .section-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-            animation: fadeIn 0.4s ease;
+            gap: 24px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
         }
 
-        .hero-banner::after {
-            content: '';
-            position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 150px;
-            height: 150px;
-            background: var(--accent-gradient);
-            filter: blur(60px);
-            opacity: 0.15;
-            pointer-events: none;
-        }
-
-        .hero-banner h1 {
-            font-size: 28px;
+        .section-header h2 {
+            font-size: 24px;
             font-weight: 800;
             letter-spacing: -0.5px;
+            margin-bottom: 6px;
         }
 
-        .hero-banner p {
-            color: var(--text-secondary);
+        .section-header p {
             font-size: 14px;
-            line-height: 1.5;
-            max-width: 600px;
+            color: var(--text-secondary);
         }
 
-        .widgets-grid {
+        .grid-cards {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 16px;
-            animation: fadeIn 0.5s ease;
         }
 
-        .widget-card {
-            background: var(--surface-color);
+        .card {
+            background-color: var(--surface-color);
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 20px;
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            transition: all 0.25s ease;
-        }
-
-        .widget-card:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .widget-header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-secondary);
-        }
-
-        .widget-value {
-            font-size: 24px;
-            font-weight: 800;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Toast notification */
-        .toast {
-            position: fixed;
-            bottom: 75px;
-            left: 50%;
-            transform: translateX(-50%) translateY(50px);
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
+            gap: 16px;
+            text-decoration: none;
             color: var(--text-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideIn 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
             box-shadow: var(--shadow);
-            z-index: 2000;
-            opacity: 0;
-            transition: transform 0.2s ease, opacity 0.2s ease;
-            pointer-events: none;
+            background-color: var(--surface-hover);
         }
 
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        .card-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
         }
 
-        /* Mobile Bottom Navigation Bar */
+        .card-info h3 {
+            font-size: 15px;
+            font-weight: 700;
+            word-break: break-all;
+        }
+
+        /* Mobile Bottom Bar */
         .mobile-nav-bar {
             display: none;
             position: fixed;
@@ -333,8 +309,17 @@
             color: var(--accent-color);
         }
 
-        /* Responsive Breakpoints & Mobile Adaptability */
-        @media (max-width: 900px) {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 800px) {
             body {
                 align-items: flex-start;
             }
@@ -353,8 +338,6 @@
                 height: 100%;
                 border-right: none;
                 display: none;
-                padding: 16px;
-                gap: 16px;
             }
 
             .sidebar.mobile-active {
@@ -367,7 +350,7 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                padding: 16px;
+                padding: 20px;
                 display: none;
             }
 
@@ -378,230 +361,186 @@
             .mobile-nav-bar {
                 display: flex;
             }
-
-            .widgets-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- Sidebar / Hub Menu -->
+        <!-- Sidebar -->
         <div class="sidebar mobile-active" id="sidebarPanel">
             <div class="brand">
-                <h2 id="brandTitle">Zalorforge Hub</h2>
+                <h2>Zalorforge</h2>
             </div>
             
             <div class="settings-bar">
-                <button class="settings-btn" onclick="toggleLanguage()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    <span id="langBtnText">CZ / EN</span>
-                </button>
                 <button class="settings-btn" onclick="toggleTheme()">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                     <span id="themeBtnText">Theme</span>
                 </button>
             </div>
 
-            <div class="nav-menu">
-                <div class="nav-item active" onclick="switchSection('home')">
-                    <span>
-                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                        <span id="navHome">Domů</span>
-                    </span>
-                    <svg style="width: 14px; height: 14px; stroke: var(--text-secondary);" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            <div class="search-box-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="searchInput" class="search-input" placeholder="Hledat..." oninput="handleSearch()">
+            </div>
+
+            <div class="nav-menu" id="navMenu">
+                <div class="nav-item active" onclick="switchSection('contributors')">
+                    <span>Contributors</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 </div>
-                <div class="nav-item" onclick="navigateApp('check')">
-                    <span>
-                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                        <span id="navCalendar">Kalendář & Úkoly</span>
-                    </span>
-                    <svg style="width: 14px; height: 14px; stroke: var(--text-secondary);" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-                </div>
-                <div class="nav-item" onclick="navigateApp('settings')">
-                    <span>
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                        <span id="navSettings">Nastavení systému</span>
-                    </span>
-                    <svg style="width: 14px; height: 14px; stroke: var(--text-secondary);" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                <div class="nav-item" onclick="switchSection('apps')">
+                    <span>Apps</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 </div>
             </div>
         </div>
 
-        <!-- Main Workspace View -->
-        <div class="main-content" id="workspacePanel">
-            <div class="hero-banner">
-                <h1 id="heroTitle">Vítejte v Zalorforge</h1>
-                <p id="heroDesc">Centrální hub pro správu vašich úkolů, událostí a osobního workflow s plnou adaptací na mobilní i desktopové zařízení.</p>
-            </div>
-
-            <div class="widgets-grid">
-                <div class="widget-card">
-                    <div class="widget-header">
-                        <span id="widgetTasksLabel">Aktivní úkoly</span>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                    </div>
-                    <div class="widget-value" id="activeTasksCount">0</div>
-                </div>
-                <div class="widget-card">
-                    <div class="widget-header">
-                        <span id="widgetEventsLabel">Nadcházející události</span>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    </div>
-                    <div class="widget-value" id="activeEventsCount">0</div>
-                </div>
-            </div>
+        <!-- Main Content -->
+        <div class="main-content" id="mainContentPanel">
+            <div class="section-container" id="dynamicContainer"></div>
         </div>
 
-        <!-- Mobile Bottom Navigation Bar -->
+        <!-- Mobile Bottom Bar -->
         <div class="mobile-nav-bar">
-            <button class="mobile-nav-item active" id="mobNavHome" onclick="switchMobileTab('home')">
-                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                <span id="mobHomeText">Domů</span>
+            <button class="mobile-nav-item active" id="mobileNavContribBtn" onclick="switchMobileSection('contributors')">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                <span>Contributors</span>
             </button>
-            <button class="mobile-nav-item" id="mobNavCalendar" onclick="navigateApp('check')">
-                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <span id="mobCalText">Kalendář</span>
-            </button>
-            <button class="mobile-nav-item" id="mobNavMenu" onclick="switchMobileTab('menu')">
-                <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                <span id="mobMenuText">Menu</span>
+            <button class="mobile-nav-item" id="mobileNavAppsBtn" onclick="switchMobileSection('apps')">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <span>Apps</span>
             </button>
         </div>
     </div>
 
-    <!-- Toast Notification Element -->
-    <div class="toast" id="toastMessage"></div>
+    <!-- Načtení externích souborů contributors.js a apps.js -->
+    <script src="contributors.js"></script>
+    <script src="apps.js"></script>
 
+    <!-- Hlavní logika pro parsování a vyhledávání -->
     <script>
-        const i18n = {
-            cs: {
-                brand: "Zalorforge Hub",
-                navHome: "Domů",
-                navCalendar: "Kalendář & Úkoly",
-                navSettings: "Nastavení systému",
-                heroTitle: "Vítejte v Zalorforge",
-                heroDesc: "Centrální hub pro správu vašich úkolů, událostí a osobního workflow s plnou adaptací na mobilní i desktopové zařízení.",
-                widgetTasks: "Aktivní úkoly",
-                widgetEvents: "Nadcházející události",
-                toastNav: "Přechod do modulu...",
-                mobHome: "Domů",
-                mobCal: "Kalendář",
-                mobMenu: "Menu"
-            },
-            en: {
-                brand: "Zalorforge Hub",
-                navHome: "Home",
-                navCalendar: "Calendar & Tasks",
-                navSettings: "System Settings",
-                heroTitle: "Welcome to Zalorforge",
-                heroDesc: "Central hub for managing your tasks, events, and personal workflow with full adaptation for mobile and desktop devices.",
-                widgetTasks: "Active Tasks",
-                widgetEvents: "Upcoming Events",
-                toastNav: "Navigating to module...",
-                mobHome: "Home",
-                mobCal: "Calendar",
-                mobMenu: "Menu"
-            }
-        };
-
-        let currentLang = localStorage.getItem('zalorforge_lang') || 'cs';
         let currentTheme = localStorage.getItem('zalorforge_theme') || 'dark';
-        let items = JSON.parse(localStorage.getItem('zalorforge_items')) || [];
+        let activeSection = 'contributors';
+        let searchQuery = '';
 
         document.documentElement.setAttribute('data-theme', currentTheme);
-
-        function showToast(message) {
-            const toast = document.getElementById('toastMessage');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 2000);
-        }
-
-        function saveSettings() {
-            localStorage.setItem('zalorforge_lang', currentLang);
-            localStorage.setItem('zalorforge_theme', currentTheme);
-        }
 
         function toggleTheme() {
             currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', currentTheme);
-            saveSettings();
-        }
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'cs' ? 'en' : 'cs';
-            saveSettings();
-            render();
+            localStorage.setItem('zalorforge_theme', currentTheme);
         }
 
         function switchSection(section) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            activeSection = section;
+            searchQuery = '';
+            document.getElementById('searchInput').value = '';
             
-            if (window.innerWidth <= 900) {
-                switchMobileTab('home');
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            
+            if (section === 'contributors') {
+                navItems[0].classList.add('active');
+            } else {
+                navItems[1].classList.add('active');
             }
+
+            renderContent();
         }
 
-        function switchMobileTab(tab) {
+        function switchMobileSection(section) {
+            switchSection(section);
+            const mobContrib = document.getElementById('mobileNavContribBtn');
+            const mobApps = document.getElementById('mobileNavAppsBtn');
             const sidebar = document.getElementById('sidebarPanel');
-            const workspace = document.getElementById('workspacePanel');
-            const mobHome = document.getElementById('mobNavHome');
-            const mobMenu = document.getElementById('mobNavMenu');
+            const main = document.getElementById('mainContentPanel');
 
-            if (tab === 'home') {
-                sidebar.classList.remove('mobile-active');
-                workspace.classList.add('mobile-active');
-                mobHome.classList.add('active');
-                mobMenu.classList.remove('active');
-            } else if (tab === 'menu') {
-                sidebar.classList.add('mobile-active');
-                workspace.classList.remove('mobile-active');
-                mobMenu.classList.add('active');
-                mobHome.classList.remove('active');
+            if (section === 'contributors') {
+                mobContrib.classList.add('active');
+                mobApps.classList.remove('active');
+            } else {
+                mobApps.classList.add('active');
+                mobContrib.classList.remove('active');
+            }
+            sidebar.classList.remove('mobile-active');
+            main.classList.add('mobile-active');
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            renderContent();
+        }
+
+        function renderContent() {
+            const container = document.getElementById('dynamicContainer');
+            container.innerHTML = '';
+
+            if (activeSection === 'contributors') {
+                const header = document.createElement('div');
+                header.className = 'section-header';
+                header.innerHTML = `<h2>Contributors</h2><p>Seznam přispěvatelů projektu Zalorforge.</p>`;
+                container.appendChild(header);
+
+                const grid = document.createElement('div');
+                grid.className = 'grid-cards';
+
+                // Kontrola, zda pole contributorsData existuje (načteno z contributors.js)
+                const data = (typeof contributorsData !== 'undefined') ? contributorsData : [];
+                const filtered = data.filter(item => item.name.toLowerCase().includes(searchQuery));
+
+                filtered.forEach(c => {
+                    const card = document.createElement('a');
+                    card.className = 'card';
+                    card.href = c.url;
+                    card.target = '_blank';
+                    card.rel = 'noopener noreferrer';
+                    card.innerHTML = `
+                        <img src="${c.logo}" alt="${c.name}" class="card-avatar">
+                        <div class="card-info">
+                            <h3>${c.name}</h3>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                container.appendChild(grid);
+
+            } else {
+                const header = document.createElement('div');
+                header.className = 'section-header';
+                header.innerHTML = `<h2>Apps</h2><p>Seznam aplikací v ekosystému Zalorforge.</p>`;
+                container.appendChild(header);
+
+                const grid = document.createElement('div');
+                grid.className = 'grid-cards';
+
+                // Kontrola, zda pole appsData existuje (načteno z apps.js)
+                const data = (typeof appsData !== 'undefined') ? appsData : [];
+                const filtered = data.filter(item => item.name.toLowerCase().includes(searchQuery));
+
+                filtered.forEach(a => {
+                    const card = document.createElement('a');
+                    card.className = 'card';
+                    card.href = a.url;
+                    if (a.url !== '#') {
+                        card.target = '_blank';
+                        card.rel = 'noopener noreferrer';
+                    }
+                    card.innerHTML = `
+                        <img src="${a.logo}" alt="${a.name}" class="card-avatar">
+                        <div class="card-info">
+                            <h3>${a.name}</h3>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                container.appendChild(grid);
             }
         }
 
-        function navigateApp(app) {
-            const t = i18n[currentLang];
-            showToast(t.toastNav);
-            setTimeout(() => {
-                if (app === 'check') {
-                    // Integrace s předchozím modulem kalendáře (check)
-                    window.location.href = '#check'; 
-                } else {
-                    showToast("Nastavení k dispozici v příští verzi.");
-                }
-            }, 300);
-        }
-
-        function render() {
-            const t = i18n[currentLang];
-            
-            document.getElementById('brandTitle').textContent = t.brand;
-            document.getElementById('navHome').textContent = t.navHome;
-            document.getElementById('navCalendar').textContent = t.navCalendar;
-            document.getElementById('navSettings').textContent = t.navSettings;
-            document.getElementById('heroTitle').textContent = t.heroTitle;
-            document.getElementById('heroDesc').textContent = t.heroDesc;
-            document.getElementById('widgetTasksLabel').textContent = t.widgetTasks;
-            document.getElementById('widgetEventsLabel').textContent = t.widgetEvents;
-            document.getElementById('mobHomeText').textContent = t.mobHome;
-            document.getElementById('mobCalText').textContent = t.mobCal;
-            document.getElementById('mobMenuText').textContent = t.mobMenu;
-
-            // Výpočet widgetů z uložených položek
-            const activeTasks = items.filter(i => i.type === 'task' && !i.completed).length;
-            const activeEvents = items.filter(i => i.type === 'event').length;
-
-            document.getElementById('activeTasksCount').textContent = activeTasks;
-            document.getElementById('activeEventsCount').textContent = activeEvents;
-        }
-
-        render();
+        // Prvotní vykreslení obsahu po načtení skriptů
+        renderContent();
     </script>
 </body>
 </html>

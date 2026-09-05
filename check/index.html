@@ -2,33 +2,33 @@
 <html lang="cs" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zalorforge-check — Calendar & Tasks</title>
     <style>
         :root[data-theme="dark"] {
-            --bg-color: #0f1117;
+            --bg-color: #0d1117;
             --surface-color: #161b22;
-            --surface-hover: #1f242c;
+            --surface-hover: #21262d;
             --text-color: #f0f6fc;
             --text-secondary: #8b949e;
             --border-color: #30363d;
             --accent-color: #58a6ff;
             --event-color: #d29922;
-            --success-color: #238636;
             --danger-color: #ff7b72;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
         :root[data-theme="light"] {
-            --bg-color: #f6f8fa;
+            --bg-color: #f8f9fa;
             --surface-color: #ffffff;
-            --surface-hover: #f3f4f6;
-            --text-color: #24292f;
-            --text-secondary: #57606a;
-            --border-color: #d0d7de;
-            --accent-color: #0969da;
-            --event-color: #9a6700;
-            --success-color: #1a7f37;
-            --danger-color: #cf222e;
+            --surface-hover: #f1f3f5;
+            --text-color: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --accent-color: #0d6efd;
+            --event-color: #e67e22;
+            --danger-color: #dc3545;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         * {
@@ -36,15 +36,18 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            display: flex;
             height: 100vh;
             height: 100dvh;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             transition: background-color 0.2s, color 0.2s;
         }
 
@@ -52,11 +55,13 @@
             display: flex;
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            max-width: 1440px;
+            background-color: var(--bg-color);
             position: relative;
+            overflow: hidden;
         }
 
-        /* Sidebar / Management Panel */
+        /* Sidebar / Management Panel (Desktop) */
         .sidebar {
             width: 400px;
             background-color: var(--surface-color);
@@ -65,8 +70,8 @@
             flex-direction: column;
             padding: 24px;
             gap: 20px;
-            z-index: 20;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, border-color 0.2s;
+            z-index: 10;
+            transition: background-color 0.2s, border-color 0.2s;
         }
 
         .brand {
@@ -77,8 +82,11 @@
 
         .brand h2 {
             font-size: 18px;
-            font-weight: 600;
-            letter-spacing: -0.3px;
+            font-weight: 700;
+            letter-spacing: -0.4px;
+            background: linear-gradient(135deg, var(--accent-color), var(--event-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .settings-bar {
@@ -91,24 +99,25 @@
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 6px;
-            font-size: 11px;
+            padding: 8px;
+            font-size: 12px;
             font-weight: 600;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
         }
 
         .settings-btn:hover {
             border-color: var(--accent-color);
+            background: var(--surface-hover);
         }
 
         .type-selector {
             display: flex;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 3px;
+            border-radius: 8px;
+            padding: 4px;
         }
 
         .type-btn {
@@ -116,17 +125,18 @@
             background: transparent;
             border: none;
             color: var(--text-secondary);
-            padding: 6px;
-            font-size: 12px;
+            padding: 8px;
+            font-size: 13px;
             font-weight: 600;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .type-btn.active {
-            background: var(--surface-hover);
+            background: var(--surface-color);
             color: var(--text-color);
+            box-shadow: var(--shadow);
         }
 
         .form-panel {
@@ -136,7 +146,7 @@
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             padding: 14px;
-            border-radius: 10px;
+            border-radius: 12px;
         }
 
         .input-group {
@@ -144,14 +154,14 @@
             gap: 8px;
         }
 
-        input, select {
-            flex-grow: 1;
-            padding: 10px 12px;
+        input {
+            width: 100%;
+            padding: 10px 14px;
             background-color: var(--surface-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            border-radius: 6px;
-            font-size: 13px;
+            border-radius: 8px;
+            font-size: 14px;
             outline: none;
             transition: border-color 0.2s;
         }
@@ -162,18 +172,18 @@
 
         button.action-btn {
             background-color: var(--accent-color);
-            color: var(--bg-color);
+            color: #ffffff;
             border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
+            padding: 10px 18px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, transform 0.1s;
         }
 
-        button.action-btn:hover {
-            opacity: 0.9;
+        button.action-btn:active {
+            transform: scale(0.98);
         }
 
         .items-list {
@@ -188,8 +198,8 @@
         .item-card {
             background-color: var(--bg-color);
             border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -215,10 +225,11 @@
             background: transparent;
             color: var(--text-secondary);
             border: 1px solid var(--border-color);
-            padding: 5px 10px;
-            font-size: 11px;
-            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .item-actions button:hover {
@@ -226,7 +237,7 @@
             border-color: var(--danger-color);
         }
 
-        /* Main Calendar View */
+        /* Main Content View */
         .main-content {
             flex-grow: 1;
             display: flex;
@@ -234,19 +245,18 @@
             padding: 24px;
             overflow-y: auto;
             background-color: var(--bg-color);
-            transition: background-color 0.2s;
         }
 
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .calendar-header h1 {
-            font-size: 22px;
-            font-weight: 600;
+            font-size: 24px;
+            font-weight: 700;
             letter-spacing: -0.5px;
         }
 
@@ -266,8 +276,11 @@
             color: var(--text-color);
             border: 1px solid var(--border-color);
             padding: 8px 14px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: border-color 0.2s;
         }
 
         .calendar-nav button:hover {
@@ -280,7 +293,7 @@
             gap: 8px;
             text-align: center;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-secondary);
             text-transform: uppercase;
             margin-bottom: 8px;
@@ -292,12 +305,13 @@
             grid-auto-rows: minmax(110px, 1fr);
             gap: 8px;
             flex-grow: 1;
+            padding-bottom: 20px;
         }
 
         .day-cell {
             background-color: var(--surface-color);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 8px;
             display: flex;
             flex-direction: column;
@@ -313,7 +327,7 @@
 
         .day-number {
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-secondary);
         }
 
@@ -325,13 +339,13 @@
             background-color: var(--bg-color);
             padding: 4px 8px;
             font-size: 11px;
-            border-radius: 4px;
+            border-radius: 6px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             cursor: pointer;
             border: 1px solid var(--border-color);
-            transition: opacity 0.2s;
+            font-weight: 500;
         }
 
         .calendar-tag.task {
@@ -342,41 +356,82 @@
             border-left: 3px solid var(--event-color);
         }
 
-        .calendar-tag:hover {
-            border-color: var(--text-secondary);
-        }
-
         .calendar-tag.completed {
-            opacity: 0.35;
+            opacity: 0.4;
             text-decoration: line-through;
             border-left-color: var(--text-secondary);
         }
 
-        .mobile-only {
+        /* Mobile Bottom Navigation Bar (Hidden on Desktop) */
+        .mobile-nav-bar {
             display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            padding: 10px 20px;
+            justify-content: space-around;
+            z-index: 100;
         }
 
+        .mobile-nav-item {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .mobile-nav-item.active {
+            color: var(--accent-color);
+        }
+
+        .mobile-view {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Responsive Breakpoints for Mobile First Architecture */
         @media (max-width: 900px) {
+            .app-container {
+                flex-direction: column;
+            }
+
             .sidebar {
                 position: absolute;
                 top: 0;
                 left: 0;
                 width: 100%;
-                height: 100%;
-                transform: translateX(-100%);
+                height: calc(100% - 65px);
                 border-right: none;
+                display: none;
+                z-index: 50;
             }
 
-            .sidebar.mobile-open {
-                transform: translateX(0);
-            }
-
-            .mobile-only {
-                display: inline-block;
+            .sidebar.mobile-active {
+                display: flex;
             }
 
             .main-content {
+                height: calc(100% - 65px);
                 padding: 16px;
+                display: none;
+            }
+
+            .main-content.mobile-active {
+                display: flex;
+            }
+
+            .mobile-nav-bar {
+                display: flex;
             }
 
             .calendar-header h1 {
@@ -397,11 +452,10 @@
 <body>
 
     <div class="app-container">
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
+        <!-- Sidebar / Task & Event Manager -->
+        <div class="sidebar mobile-active" id="sidebarPanel">
             <div class="brand">
                 <h2>Zalorforge-check</h2>
-                <button class="mobile-only" onclick="toggleMobileSidebar()" style="background:transparent; color:var(--text-color); border:1px solid var(--border-color); padding:4px 10px; border-radius:6px; cursor:pointer;">✕</button>
             </div>
             
             <div class="settings-bar">
@@ -416,7 +470,7 @@
 
             <div class="form-panel">
                 <div class="input-group">
-                    <input type="text" id="itemTitle" data-i18n-placeholder="titlePlaceholder" placeholder="Title (e.g. Tomášek narozeniny)...">
+                    <input type="text" id="itemTitle" placeholder="Title (e.g. Tomášek narozeniny)...">
                 </div>
                 <div class="input-group" id="timeGroup" style="display: none;">
                     <input type="time" id="itemTime">
@@ -431,11 +485,10 @@
         </div>
 
         <!-- Main Calendar View -->
-        <div class="main-content">
+        <div class="main-content" id="calendarPanel">
             <div class="calendar-header">
                 <h1 id="monthYearDisplay"></h1>
                 <div class="header-controls">
-                    <button class="mobile-only" onclick="toggleMobileSidebar()" style="background-color: var(--surface-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 6px; cursor: pointer;">Menu ☰</button>
                     <div class="calendar-nav">
                         <button onclick="changeMonth(-1)" id="prevBtnText">Prev</button>
                         <button onclick="currentMonthView()" id="todayBtnText">Today</button>
@@ -444,22 +497,30 @@
                 </div>
             </div>
 
-            <div class="weekdays" id="weekdaysGrid">
-                <!-- Days will be populated via JS -->
-            </div>
-
+            <div class="weekdays" id="weekdaysGrid"></div>
             <div class="days-grid" id="daysGrid"></div>
+        </div>
+
+        <!-- Mobile Bottom Navigation Bar -->
+        <div class="mobile-nav-bar">
+            <button class="mobile-nav-item" id="navCalendarBtn" onclick="switchMobileTab('calendar')">
+                <span style="font-size: 18px;">📅</span>
+                <span id="navCalText">Calendar</span>
+            </button>
+            <button class="mobile-nav-item active" id="navTasksBtn" onclick="switchMobileTab('tasks')">
+                <span style="font-size: 18px;">✔️</span>
+                <span id="navTaskText">Tasks</span>
+            </button>
         </div>
     </div>
 
     <script>
-        // Localization dictionaries
         const i18n = {
             cs: {
                 task: "Úkol",
                 event: "Událost",
                 add: "Přidat",
-                prev: "Předchozí",
+                prev: "Zpět",
                 today: "Dnes",
                 next: "Další",
                 done: "Hotovo",
@@ -467,6 +528,8 @@
                 del: "Smazat",
                 titlePlaceholder: "Název (např. Tomášek narozeniny)...",
                 alertTitle: "Zadejte prosím název.",
+                navCalendar: "Kalendář",
+                navTasks: "Úkoly",
                 weekdays: ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"],
                 months: ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"]
             },
@@ -482,6 +545,8 @@
                 del: "Del",
                 titlePlaceholder: "Title (e.g. Tomášek birthday)...",
                 alertTitle: "Please enter a title.",
+                navCalendar: "Calendar",
+                navTasks: "Tasks",
                 weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
                 months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
             }
@@ -489,14 +554,12 @@
 
         let currentLang = localStorage.getItem('zalorforge_lang') || 'cs';
         let currentTheme = localStorage.getItem('zalorforge_theme') || 'dark';
-        
         let items = JSON.parse(localStorage.getItem('zalorforge_items')) || [];
         let activeType = 'task';
         let today = new Date();
         let currentMonth = today.getMonth();
         let currentYear = today.getFullYear();
 
-        // Apply saved theme on load
         document.documentElement.setAttribute('data-theme', currentTheme);
 
         function saveSettings() {
@@ -517,8 +580,23 @@
             render();
         }
 
-        function toggleMobileSidebar() {
-            document.getElementById('sidebar').classList.toggle('mobile-open');
+        function switchMobileTab(tab) {
+            const sidebar = document.getElementById('sidebarPanel');
+            const calendar = document.getElementById('calendarPanel');
+            const navTasks = document.getElementById('navTasksBtn');
+            const navCalendar = document.getElementById('navCalendarBtn');
+
+            if (tab === 'tasks') {
+                sidebar.classList.add('mobile-active');
+                calendar.classList.remove('mobile-active');
+                navTasks.classList.add('active');
+                navCalendar.classList.remove('active');
+            } else {
+                sidebar.classList.remove('mobile-active');
+                calendar.classList.add('mobile-active');
+                navCalendar.classList.add('active');
+                navTasks.classList.remove('active');
+            }
         }
 
         function switchInputType(type) {
@@ -526,8 +604,8 @@
             const taskBtn = document.getElementById('typeTaskBtn');
             const eventBtn = document.getElementById('typeEventBtn');
             const timeGroup = document.getElementById('timeGroup');
-
             const t = i18n[currentLang];
+
             taskBtn.textContent = t.task;
             eventBtn.textContent = t.event;
 
@@ -601,7 +679,6 @@
         function render() {
             const t = i18n[currentLang];
 
-            // Update static texts
             document.getElementById('typeTaskBtn').textContent = t.task;
             document.getElementById('typeEventBtn').textContent = t.event;
             document.getElementById('addBtnText').textContent = t.add;
@@ -609,10 +686,10 @@
             document.getElementById('todayBtnText').textContent = t.today;
             document.getElementById('nextBtnText').textContent = t.next;
             document.getElementById('itemTitle').placeholder = t.titlePlaceholder;
+            document.getElementById('navCalText').textContent = t.navCalendar;
+            document.getElementById('navTaskText').textContent = t.navTasks;
             
-            // Render weekdays header
-            const weekdaysGrid = document.getElementById('weekdaysGrid');
-            weekdaysGrid.innerHTML = t.weekdays.map(d => `<div>${d}</div>`).join('');
+            document.getElementById('weekdaysGrid').innerHTML = t.weekdays.map(d => `<div>${d}</div>`).join('');
 
             renderList();
             renderCalendar();

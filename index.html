@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ZalorForge — Ecosystem</title>
     <style>
-        :root {
+        :root[data-theme="dark"] {
             --bg-color: #0d1117;
             --surface-color: #161b22;
             --surface-hover: #1f242c;
@@ -15,6 +15,19 @@
             --accent-color: #58a6ff;
             --accent-gradient: linear-gradient(135deg, #58a6ff, #bc8cff);
             --shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.6);
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        :root[data-theme="light"] {
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --surface-hover: #f1f5f9;
+            --text-color: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --accent-color: #2563eb;
+            --accent-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -35,9 +48,9 @@
             min-height: 100dvh;
             justify-content: space-between;
             overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Vylepšené plynulé animace */
         @keyframes heroEntrance {
             0% { opacity: 0; transform: translateY(24px) scale(0.98); }
             100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -50,14 +63,57 @@
 
         header {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             padding: 24px 32px;
-            gap: 20px;
             align-items: center;
             animation: heroEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
         }
 
-        header a {
+        .header-left {
+            display: flex;
+            gap: 12px;
+        }
+
+        .control-btn {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .control-btn:hover {
+            border-color: var(--accent-color);
+            background: var(--surface-hover);
+            transform: translateY(-1px);
+        }
+
+        .control-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-right a {
             color: var(--text-secondary);
             text-decoration: none;
             font-size: 13px;
@@ -65,7 +121,7 @@
             transition: color 0.2s;
         }
 
-        header a:hover {
+        .header-right a:hover {
             color: var(--accent-color);
         }
 
@@ -119,7 +175,7 @@
 
         .search-box:hover, .search-box:focus-within {
             border-color: var(--accent-color);
-            box-shadow: 0 6px 25px rgba(88, 166, 255, 0.2);
+            box-shadow: 0 6px 25px rgba(88, 166, 255, 0.15);
             transform: translateY(-2px);
         }
 
@@ -149,7 +205,6 @@
             color: var(--text-secondary);
         }
 
-        /* Sekce pro ikony a mřížku */
         .content-sections {
             width: 100%;
             margin-top: 44px;
@@ -196,7 +251,7 @@
             background-color: var(--surface-hover);
             border-color: var(--accent-color);
             transform: translateY(-4px);
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
         }
 
         .shortcut-item:active {
@@ -212,13 +267,13 @@
             justify-content: center;
             margin-bottom: 10px;
             overflow: hidden;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
             transition: var(--transition);
         }
 
         .shortcut-item:hover .shortcut-icon-wrapper {
-            border-color: rgba(88, 166, 255, 0.3);
+            border-color: var(--accent-color);
             transform: scale(1.05);
         }
 
@@ -245,6 +300,7 @@
             font-size: 12px;
             border-top: 1px solid var(--border-color);
             padding: 20px 32px;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         .footer-row {
@@ -272,7 +328,6 @@
             color: var(--accent-color);
         }
 
-        /* Optimalizované mobilní UI */
         @media (max-width: 600px) {
             header {
                 padding: 16px 20px;
@@ -324,14 +379,26 @@
 <body>
 
     <header>
-        <a href="https://github.com/zalorforge" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="#ecosystem">Ecosystem</a>
+        <div class="header-left">
+            <button class="control-btn" onclick="toggleTheme()">
+                <svg viewBox="0 0 24 24" id="themeIcon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <span id="themeLabel">Dark</span>
+            </button>
+            <button class="control-btn" onclick="toggleLanguage()">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span id="langLabel">CZ</span>
+            </button>
+        </div>
+        <div class="header-right">
+            <a href="https://github.com/zalorforge" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="#ecosystem" id="navEcosystem">Ecosystem</a>
+        </div>
     </header>
 
     <main>
         <div class="logo-container">
             <h1 class="logo">ZalorForge</h1>
-            <p class="tagline">Ethical • High-Performance • Sustainable Ecosystem</p>
+            <p class="tagline" id="taglineText">Ethical • High-Performance • Sustainable Ecosystem</p>
         </div>
 
         <div class="search-box">
@@ -341,12 +408,12 @@
 
         <div class="content-sections">
             <div class="section-group">
-                <div class="section-title">Applications</div>
+                <div class="section-title" id="appsTitle">Applications</div>
                 <div id="apps-grid" class="grid-container"></div>
             </div>
 
             <div class="section-group">
-                <div class="section-title">Contributors</div>
+                <div class="section-title" id="contributorsTitle">Contributors</div>
                 <div id="contributors-grid" class="grid-container"></div>
             </div>
         </div>
@@ -354,7 +421,7 @@
 
     <footer>
         <div class="footer-row">
-            <span>© ZalorForge Project • Zero-Cost Infrastructure</span>
+            <span id="footerCopy">© ZalorForge Project • Zero-Cost Infrastructure</span>
             <div class="footer-links">
                 <a href="https://turso.tech" target="_blank" rel="noopener noreferrer">Turso DB</a>
                 <a href="https://pages.cloudflare.com" target="_blank" rel="noopener noreferrer">Cloudflare</a>
@@ -367,15 +434,66 @@
     <script src="apps.js"></script>
     <script src="contributors.js"></script>
     <script>
+        const i18n = {
+            en: {
+                searchPlaceholder: "Search apps, commands or documents...",
+                appsTitle: "Applications",
+                contributorsTitle: "Contributors",
+                ecosystem: "Ecosystem",
+                tagline: "Ethical • High-Performance • Sustainable Ecosystem",
+                noResults: "No results found"
+            },
+            cs: {
+                searchPlaceholder: "Hledat aplikace, příkazy nebo dokumenty...",
+                appsTitle: "Aplikace",
+                contributorsTitle: "Přispěvatelé",
+                ecosystem: "Ekosystém",
+                tagline: "Etický • Vysoce výkonný • Udržitelný ekosystém",
+                noResults: "Žádné výsledky"
+            }
+        };
+
+        let currentLang = localStorage.getItem('zalorforge_lang') || 'cs';
+        let currentTheme = localStorage.getItem('zalorforge_theme') || 'dark';
         let allApps = [];
         let allContributors = [];
+
+        document.documentElement.setAttribute('data-theme', currentTheme);
+
+        function updateUIStrings() {
+            const t = i18n[currentLang];
+            document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+            document.getElementById('appsTitle').textContent = t.appsTitle;
+            document.getElementById('contributorsTitle').textContent = t.contributorsTitle;
+            document.getElementById('navEcosystem').textContent = t.ecosystem;
+            document.getElementById('taglineText').textContent = t.tagline;
+            document.getElementById('langLabel').textContent = currentLang.toUpperCase();
+            
+            const themeLabel = document.getElementById('themeLabel');
+            themeLabel.textContent = currentTheme === 'dark' ? (currentLang === 'cs' ? 'Tmavý' : 'Dark') : (currentLang === 'cs' ? 'Světlý' : 'Light');
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('zalorforge_theme', currentTheme);
+            updateUIStrings();
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'cs' ? 'en' : 'cs';
+            localStorage.setItem('zalorforge_lang', currentLang);
+            updateUIStrings();
+            filterAndRender();
+        }
 
         function renderGrid(containerId, items) {
             const container = document.getElementById(containerId);
             if (!container || !Array.isArray(items)) return;
             
+            const t = i18n[currentLang];
             if (items.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); font-size: 13px; padding: 12px;">Žádné výsledky</div>`;
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); font-size: 13px; padding: 12px;">${t.noResults}</div>`;
                 return;
             }
 
@@ -403,6 +521,7 @@
             if (typeof appsData !== 'undefined') allApps = appsData;
             if (typeof contributorsData !== 'undefined') allContributors = contributorsData;
 
+            updateUIStrings();
             renderGrid('apps-grid', allApps);
             renderGrid('contributors-grid', allContributors);
 

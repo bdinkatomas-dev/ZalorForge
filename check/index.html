@@ -311,7 +311,7 @@
 
         .weekdays {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             text-align: center;
             font-size: 11px;
@@ -324,11 +324,20 @@
 
         .days-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            grid-template-rows: repeat(6, 1fr);
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: minmax(90px, 1fr);
             gap: 8px;
             flex-grow: 1;
-            overflow: hidden;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .days-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+        .days-grid::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
         }
 
         .day-cell {
@@ -455,7 +464,7 @@
             color: var(--accent-color);
         }
 
-        /* Responsive Breakpoints - Mobile Agenda / List Mode */
+        /* Responsive Breakpoints */
         @media (max-width: 900px) {
             body {
                 align-items: flex-start;
@@ -509,43 +518,9 @@
                 font-size: 17px;
             }
 
-            /* Na mobilech přepneme kalendář na vertikální seznam dnů (zabrání squished mřížce) */
-            .days-grid {
-                display: flex;
-                flex-direction: column;
-                grid-template-columns: none;
-                grid-template-rows: none;
-                gap: 8px;
-                overflow-y: auto;
-                padding-bottom: 20px;
-            }
-
-            .weekdays {
-                display: none; /* V seznamovém zobrazení na mobilu nepotřebujeme řádek dnů v týdnu */
-            }
-
-            .day-cell {
-                min-height: auto;
-                flex-direction: row;
-                align-items: center;
-                flex-wrap: wrap;
-                padding: 10px 12px;
-                gap: 8px;
-            }
-
-            .day-cell:empty {
-                display: none; /* Skryje dny, které v daném měsíci nemají záznamy, pro čistější mobilní přehled */
-            }
-
-            .day-number {
-                font-size: 14px;
-                min-width: 30px;
-                color: var(--accent-color);
-            }
-
-            .calendar-tag {
-                font-size: 12px;
-                padding: 4px 8px;
+            /* Na mobilu vynutíme přesně 4 dny na řádek i v kalendářové mřížce */
+            .weekdays, .days-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
     </style>
@@ -812,7 +787,13 @@
             document.getElementById('navCalText').textContent = t.navCalendar;
             document.getElementById('navTaskText').textContent = t.navTasks;
             
-            document.getElementById('weekdaysGrid').innerHTML = t.weekdays.map(d => `<div>${d}</div>`).join('');
+            // Pro 4 sloupce vygenerujeme první 4 dny jako hlavičku (Po, Út, St, Čt)
+            document.getElementById('weekdaysGrid').innerHTML = `
+                <div>${t.weekdays[0]}</div>
+                <div>${t.weekdays[1]}</div>
+                <div>${t.weekdays[2]}</div>
+                <div>${t.weekdays[3]}</div>
+            `;
 
             renderList();
             renderCalendar();
@@ -858,14 +839,12 @@
             let firstDayIndex = (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
             let totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-            // Na desktopu zachováme prázdné buňky pro zarovnání mřížky
-            if (window.innerWidth > 900) {
-                for (let i = 0; i < firstDayIndex; i++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'day-cell';
-                    cell.style.opacity = '0.15';
-                    grid.appendChild(cell);
-                }
+            // Přidání prázdných buněk pro přesné zarovnání mřížky na 4 sloupce
+            for (let i = 0; i < firstDayIndex; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                cell.style.opacity = '0.15';
+                grid.appendChild(cell);
             }
 
             for (let day = 1; day <= totalDays; day++) {
@@ -880,19 +859,9 @@
                     cell.classList.add('today');
                 }
 
-                // Na mobilu zobrazíme u dne i název dne v týdnu pro lepší přehlednost
-                const dayOfWeekIndex = (new Date(currentYear, currentMonth, day).getDay() + 6) % 7;
-                const dayNameLabel = t.weekdays[dayOfWeekIndex];
-
-                cell.innerHTML = `<div class="day-number">${day}. <span style="font-size:11px; font-weight:normal; opacity:0.7;">${dayNameLabel}</span></div>`;
+                cell.innerHTML = `<div class="day-number">${day}</div>`;
 
                 const dayItems = items.filter(i => i.date === dateString);
-                
-                // Na mobilu skryjeme prázdné dny bez událostí, aby se uživatel nemusel proscrollovávat celým měsícem
-                if (window.innerWidth <= 900 && dayItems.length === 0) {
-                    continue; 
-                }
-
                 dayItems.forEach(item => {
                     const tag = document.createElement('div');
                     tag.className = `calendar-tag ${item.type} ${item.completed ? 'completed' : ''}`;

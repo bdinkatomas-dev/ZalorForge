@@ -1,6 +1,6 @@
 const appsData = [
     {
-        name: "Zalorforge-check",
+        name: "Check",
         logo: "zalorforge.pages.dev/uploads/check.svg",
         url: "zalorforge.pages.dev/check/"
     },

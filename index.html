@@ -277,9 +277,11 @@
             transform: scale(1.05);
         }
 
-        .shortcut-icon-wrapper img {
-            width: 24px;
-            height: 24px;
+        /* Upraveno pro správné renderování SVG prvků vložených přes odkaz / inline */
+        .shortcut-icon-wrapper img,
+        .shortcut-icon-wrapper svg {
+            width: 28px;
+            height: 28px;
             object-fit: contain;
         }
 
@@ -484,7 +486,6 @@
             currentLang = currentLang === 'cs' ? 'en' : 'cs';
             localStorage.setItem('zalorforge_lang', currentLang);
             updateUIStrings();
-            filterAndRender();
         }
 
         function renderGrid(containerId, items) {
@@ -497,14 +498,27 @@
                 return;
             }
 
-            container.innerHTML = items.map((item, index) => `
-                <a href="${item.url}" class="shortcut-item" target="_blank" rel="noopener noreferrer" style="animation-delay: ${index * 0.04}s">
-                    <div class="shortcut-icon-wrapper">
-                        <img src="${item.logo}" alt="${item.name}" onerror="this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">
-                    </div>
-                    <span class="shortcut-name">${item.name}</span>
-                </a>
-            `).join('');
+            container.innerHTML = items.map((item, index) => {
+                let logoContent = '';
+                // Rozpoznání, zda logo je přímá SVG cesta/odkaz končící na .svg nebo obsahující data-svg / url
+                if (item.logo && (item.logo.trim().startsWith('<svg') || item.logo.trim().startsWith('data:image/svg+xml'))) {
+                    logoContent = item.logo;
+                } else if (item.logo && item.logo.toLowerCase().endsWith('.svg')) {
+                    // Pokud jde o URL na externí soubor SVG, načteme ho jako obrázek s podporou fallbacku
+                    logoContent = `<img src="${item.logo}" alt="${item.name}" onerror="this.onerror=null; this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">`;
+                } else {
+                    logoContent = `<img src="${item.logo || 'https://api.iconify.design/lucide:box.svg?color=%238b949e'}" alt="${item.name}" onerror="this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">`;
+                }
+
+                return `
+                    <a href="${item.url}" class="shortcut-item" target="_blank" rel="noopener noreferrer" style="animation-delay: ${index * 0.04}s">
+                        <div class="shortcut-icon-wrapper">
+                            ${logoContent}
+                        </div>
+                        <span class="shortcut-name">${item.name}</span>
+                    </a>
+                `;
+            }).join('');
         }
 
         function filterAndRender() {

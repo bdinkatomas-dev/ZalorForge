@@ -1,28 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZalorForge</title>
     <style>
         :root {
-            --bg-color: #ffffff;
-            --text-color: #202124;
-            --text-secondary: #5f6368;
-            --border-color: #dfe1e5;
-            --hover-bg: #f8f9fa;
-            --shadow-color: rgba(32, 33, 36, 0.1);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #202124;
-                --text-color: #e8eaed;
-                --text-secondary: #9aa0a6;
-                --border-color: #5f6368;
-                --hover-bg: #303134;
-                --shadow-color: rgba(0, 0, 0, 0.3);
-            }
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-color: #e8eaed;
+            --text-secondary: #9aa0a6;
+            --border-color: #3c4043;
+            --hover-bg: #2d2f31;
+            --shadow-color: rgba(0, 0, 0, 0.4);
         }
 
         * {
@@ -69,27 +59,17 @@
             justify-content: center;
             flex-grow: 1;
             padding: 0 16px;
-            margin-top: -8vh;
+            margin-top: -4vh;
         }
 
         .logo {
-            font-size: clamp(40px, 8vw, 64px);
+            font-size: clamp(36px, 7vw, 56px);
             font-weight: 500;
             letter-spacing: -1px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
+            color: var(--text-color);
             user-select: none;
         }
-
-        .logo span:nth-child(1) { color: #4285F4; }
-        .logo span:nth-child(2) { color: #EA4335; }
-        .logo span:nth-child(3) { color: #FBBC05; }
-        .logo span:nth-child(4) { color: #4285F4; }
-        .logo span:nth-child(5) { color: #34A853; }
-        .logo span:nth-child(6) { color: #EA4335; }
-        .logo span:nth-child(7) { color: #FBBC05; }
-        .logo span:nth-child(8) { color: #34A853; }
-        .logo span:nth-child(9) { color: #4285F4; }
-        .logo span:nth-child(10) { color: #EA4335; }
 
         .search-box {
             display: flex;
@@ -101,12 +81,12 @@
             border-radius: 24px;
             padding: 0 14px;
             transition: box-shadow 0.2s, border-color 0.2s;
-            background-color: var(--bg-color);
+            background-color: var(--surface-color);
         }
 
         .search-box:hover, .search-box:focus-within {
             box-shadow: 0 1px 6px var(--shadow-color);
-            border-color: transparent;
+            border-color: var(--text-secondary);
         }
 
         .search-icon {
@@ -125,34 +105,77 @@
             font-size: 16px;
         }
 
-        .buttons {
+        /* Sekce pro ikony (Apps & Contributors) */
+        .shortcuts-section {
+            width: 100%;
+            max-width: 650px;
+            margin-top: 36px;
             display: flex;
-            margin-top: 28px;
-            gap: 12px;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .btn {
-            background-color: var(--hover-bg);
-            border: 1px solid transparent;
-            color: var(--text-color);
-            font-size: 14px;
-            padding: 0 16px;
-            height: 36px;
-            line-height: 34px;
-            border-radius: 4px;
-            cursor: pointer;
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 16px;
+        }
+
+        .shortcut-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-decoration: none;
-            text-align: center;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
         }
 
-        .btn:hover {
-            border-color: var(--border-color);
-            box-shadow: 0 1px 1px var(--shadow-color);
+        .shortcut-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .shortcut-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .shortcut-icon-wrapper img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .shortcut-name {
+            font-size: 12px;
+            color: var(--text-color);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
         }
 
         footer {
-            background-color: var(--hover-bg);
+            background-color: var(--surface-color);
             color: var(--text-secondary);
             font-size: 13px;
             border-top: 1px solid var(--border-color);
@@ -191,18 +214,24 @@
     </header>
 
     <main>
-        <div class="logo">
-            <span>Z</span><span>a</span><span>l</span><span>o</span><span>r</span><span>F</span><span>o</span><span>r</span><span>g</span><span>e</span>
-        </div>
+        <div class="logo">ZalorForge</div>
 
         <div class="search-box">
             <svg class="search-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
-            <input type="text" class="search-input" placeholder="Search ZalorForge ecosystem or type a command..." autofocus>
+            <input type="text" class="search-input" placeholder="Search ecosystem or type command..." autofocus>
         </div>
 
-        <div class="buttons">
-            <a href="https://zalorforge.pages.dev" class="btn">Explore Ecosystem</a>
-            <a href="https://github.com/your-username/zalorforge/graphs/contributors" target="_blank" class="btn">Contributors</a>
+        <!-- Dynamické sekce pro Apps a Contributors -->
+        <div class="shortcuts-section">
+            <div>
+                <div class="section-title">Applications</div>
+                <div id="apps-grid" class="grid-container"></div>
+            </div>
+
+            <div>
+                <div class="section-title">Contributors</div>
+                <div id="contributors-grid" class="grid-container"></div>
+            </div>
         </div>
     </main>
 
@@ -216,5 +245,30 @@
         </div>
     </footer>
 
+    <!-- Načtení datových skriptů -->
+    <script src="apps.js"></script>
+    <script src="contributors.js"></script>
+    <script>
+        // Funkce pro vykreslení položek do mřížky
+        function renderGrid(containerId, items) {
+            const container = document.getElementById(containerId);
+            if (!container || !Array.isArray(items)) return;
+            
+            container.innerHTML = items.map(item => `
+                <a href="${item.url}" class="shortcut-item" target="_blank" rel="noopener noreferrer">
+                    <div class="shortcut-icon-wrapper">
+                        <img src="${item.logo}" alt="${item.name}" onerror="this.src='https://api.iconify.design/lucide:box.svg?color=%239aa0a6'">
+                    </div>
+                    <span class="shortcut-name">${item.name}</span>
+                </a>
+            `).join('');
+        }
+
+        // Inicializace po načtení stránky
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof appsData !== 'undefined') renderGrid('apps-grid', appsData);
+            if (typeof contributorsData !== 'undefined') renderGrid('contributors-grid', contributorsData);
+        });
+    </script>
 </body>
 </html>

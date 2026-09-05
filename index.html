@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZalorForge</title>
+    <title>ZalorForge — Ecosystem</title>
     <style>
         :root {
-            --bg-color: #121212;
-            --surface-color: #1e1e1e;
-            --text-color: #e8eaed;
-            --text-secondary: #9aa0a6;
-            --border-color: #3c4043;
-            --hover-bg: #2d2f31;
-            --shadow-color: rgba(0, 0, 0, 0.4);
+            --bg-color: #0d1117;
+            --surface-color: #161b22;
+            --surface-hover: #1f242c;
+            --text-color: #f0f6fc;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --accent-color: #58a6ff;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
@@ -29,27 +30,39 @@
             flex-direction: column;
             min-height: 100vh;
             justify-content: space-between;
+            overflow-x: hidden;
+        }
+
+        /* Animace při načtení */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         header {
             display: flex;
             justify-content: flex-end;
-            padding: 16px 24px;
-            gap: 16px;
+            padding: 20px 32px;
+            gap: 20px;
             align-items: center;
+            animation: fadeInDown 0.6s ease-out;
         }
 
         header a {
-            color: var(--text-color);
+            color: var(--text-secondary);
             text-decoration: none;
             font-size: 13px;
-            opacity: 0.8;
-            transition: opacity 0.2s;
+            font-weight: 500;
+            transition: color 0.2s;
         }
 
         header a:hover {
-            opacity: 1;
-            text-decoration: underline;
+            color: var(--accent-color);
         }
 
         main {
@@ -58,42 +71,60 @@
             align-items: center;
             justify-content: center;
             flex-grow: 1;
-            padding: 0 16px;
-            margin-top: -4vh;
+            padding: 0 20px 40px 20px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 32px;
         }
 
         .logo {
-            font-size: clamp(36px, 7vw, 56px);
-            font-weight: 500;
-            letter-spacing: -1px;
-            margin-bottom: 24px;
+            font-size: clamp(42px, 8vw, 64px);
+            font-weight: 700;
+            letter-spacing: -1.5px;
             color: var(--text-color);
             user-select: none;
+            margin-bottom: 8px;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 400;
         }
 
         .search-box {
             display: flex;
             align-items: center;
             width: 100%;
-            max-width: 584px;
-            height: 46px;
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 0 14px;
-            transition: box-shadow 0.2s, border-color 0.2s;
+            max-width: 600px;
+            height: 50px;
             background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 0 18px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
         }
 
         .search-box:hover, .search-box:focus-within {
-            box-shadow: 0 1px 6px var(--shadow-color);
-            border-color: var(--text-secondary);
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 20px rgba(88, 166, 255, 0.15);
+            transform: translateY(-1px);
         }
 
         .search-icon {
             width: 20px;
             height: 20px;
             fill: var(--text-secondary);
-            margin-right: 12px;
+            margin-right: 14px;
+            transition: fill 0.2s;
+        }
+
+        .search-box:focus-within .search-icon {
+            fill: var(--accent-color);
         }
 
         .search-input {
@@ -105,29 +136,38 @@
             font-size: 16px;
         }
 
-        /* Sekce pro ikony (Apps & Contributors) */
-        .shortcuts-section {
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Sekce pro ikony */
+        .content-sections {
             width: 100%;
-            max-width: 650px;
-            margin-top: 36px;
+            max-width: 680px;
+            margin-top: 48px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 32px;
+        }
+
+        .section-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
         }
 
         .section-title {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             color: var(--text-secondary);
-            margin-bottom: 8px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 4px;
+            font-weight: 600;
+            padding-left: 4px;
         }
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
             gap: 16px;
         }
 
@@ -136,31 +176,35 @@
             flex-direction: column;
             align-items: center;
             text-decoration: none;
-            padding: 10px;
-            border-radius: 8px;
-            transition: background-color 0.2s;
+            padding: 12px 8px;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .shortcut-item:hover {
-            background-color: var(--hover-bg);
+            background-color: var(--surface-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
         }
 
         .shortcut-icon-wrapper {
-            width: 48px;
-            height: 48px;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 8px;
             overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.03);
         }
 
         .shortcut-icon-wrapper img {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             object-fit: contain;
         }
 
@@ -172,63 +216,68 @@
             overflow: hidden;
             text-overflow: ellipsis;
             width: 100%;
+            font-weight: 500;
         }
 
         footer {
             background-color: var(--surface-color);
             color: var(--text-secondary);
-            font-size: 13px;
+            font-size: 12px;
             border-top: 1px solid var(--border-color);
+            padding: 16px 32px;
         }
 
         .footer-row {
-            padding: 15px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 12px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .footer-links {
             display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .footer-links a {
             color: var(--text-secondary);
             text-decoration: none;
+            transition: color 0.2s;
         }
 
         .footer-links a:hover {
-            text-decoration: underline;
+            color: var(--accent-color);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="https://github.com/your-username/zalorforge" target="_blank">GitHub</a>
-        <a href="https://zalorforge.pages.dev">Ecosystem</a>
+        <a href="https://github.com/zalorforge" target="_blank">GitHub</a>
+        <a href="#ecosystem">Ecosystem</a>
     </header>
 
     <main>
-        <div class="logo">ZalorForge</div>
-
-        <div class="search-box">
-            <svg class="search-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
-            <input type="text" class="search-input" placeholder="Search ecosystem or type command..." autofocus>
+        <div class="logo-container">
+            <h1 class="logo">ZalorForge</h1>
+            <p class="tagline">Ethical • High-Performance • Sustainable Ecosystem</p>
         </div>
 
-        <!-- Dynamické sekce pro Apps a Contributors -->
-        <div class="shortcuts-section">
-            <div>
+        <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" class="search-input" placeholder="Search apps, commands or documents..." autofocus>
+        </div>
+
+        <div class="content-sections">
+            <div class="section-group">
                 <div class="section-title">Applications</div>
                 <div id="apps-grid" class="grid-container"></div>
             </div>
 
-            <div>
+            <div class="section-group">
                 <div class="section-title">Contributors</div>
                 <div id="contributors-grid" class="grid-container"></div>
             </div>
@@ -237,19 +286,19 @@
 
     <footer>
         <div class="footer-row">
-            <span>Ethical • Sustainable • High Performance</span>
+            <span>© ZalorForge Project • Zero-Cost Infrastructure</span>
             <div class="footer-links">
-                <a href="https://zalorforge.pages.dev">ZalorForge Cloud</a>
-                <a href="https://github.com/your-username/zalorforge" target="_blank">Source Code</a>
+                <a href="https://turso.tech" target="_blank">Turso DB</a>
+                <a href="https://pages.cloudflare.com" target="_blank">Cloudflare</a>
+                <a href="https://render.com" target="_blank">Render API</a>
             </div>
         </div>
     </footer>
 
-    <!-- Načtení datových skriptů -->
+    <!-- Načtení dat -->
     <script src="apps.js"></script>
     <script src="contributors.js"></script>
     <script>
-        // Funkce pro vykreslení položek do mřížky
         function renderGrid(containerId, items) {
             const container = document.getElementById(containerId);
             if (!container || !Array.isArray(items)) return;
@@ -257,14 +306,13 @@
             container.innerHTML = items.map(item => `
                 <a href="${item.url}" class="shortcut-item" target="_blank" rel="noopener noreferrer">
                     <div class="shortcut-icon-wrapper">
-                        <img src="${item.logo}" alt="${item.name}" onerror="this.src='https://api.iconify.design/lucide:box.svg?color=%239aa0a6'">
+                        <img src="${item.logo}" alt="${item.name}" onerror="this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">
                     </div>
                     <span class="shortcut-name">${item.name}</span>
                 </a>
             `).join('');
         }
 
-        // Inicializace po načtení stránky
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof appsData !== 'undefined') renderGrid('apps-grid', appsData);
             if (typeof contributorsData !== 'undefined') renderGrid('contributors-grid', contributorsData);

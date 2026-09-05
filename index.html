@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZalorForge</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dfe1e5;
+            --hover-bg: #f8f9fa;
+            --shadow-color: rgba(32, 33, 36, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #202124;
+                --text-color: #e8eaed;
+                --text-secondary: #9aa0a6;
+                --border-color: #5f6368;
+                --hover-bg: #303134;
+                --shadow-color: rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: space-between;
+        }
+
+        header {
+            display: flex;
+            justify-content: flex-end;
+            padding: 16px 24px;
+            gap: 16px;
+            align-items: center;
+        }
+
+        header a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 13px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        header a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 0 16px;
+            margin-top: -8vh;
+        }
+
+        .logo {
+            font-size: clamp(40px, 8vw, 64px);
+            font-weight: 500;
+            letter-spacing: -1px;
+            margin-bottom: 28px;
+            user-select: none;
+        }
+
+        .logo span:nth-child(1) { color: #4285F4; }
+        .logo span:nth-child(2) { color: #EA4335; }
+        .logo span:nth-child(3) { color: #FBBC05; }
+        .logo span:nth-child(4) { color: #4285F4; }
+        .logo span:nth-child(5) { color: #34A853; }
+        .logo span:nth-child(6) { color: #EA4335; }
+        .logo span:nth-child(7) { color: #FBBC05; }
+        .logo span:nth-child(8) { color: #34A853; }
+        .logo span:nth-child(9) { color: #4285F4; }
+        .logo span:nth-child(10) { color: #EA4335; }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 584px;
+            height: 46px;
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 0 14px;
+            transition: box-shadow 0.2s, border-color 0.2s;
+            background-color: var(--bg-color);
+        }
+
+        .search-box:hover, .search-box:focus-within {
+            box-shadow: 0 1px 6px var(--shadow-color);
+            border-color: transparent;
+        }
+
+        .search-icon {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-secondary);
+            margin-right: 12px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 16px;
+        }
+
+        .buttons {
+            display: flex;
+            margin-top: 28px;
+            gap: 12px;
+        }
+
+        .btn {
+            background-color: var(--hover-bg);
+            border: 1px solid transparent;
+            color: var(--text-color);
+            font-size: 14px;
+            padding: 0 16px;
+            height: 36px;
+            line-height: 34px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            border-color: var(--border-color);
+            box-shadow: 0 1px 1px var(--shadow-color);
+        }
+
+        footer {
+            background-color: var(--hover-bg);
+            color: var(--text-secondary);
+            font-size: 13px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-row {
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="https://github.com/your-username/zalorforge" target="_blank">GitHub</a>
+        <a href="https://zalorforge.pages.dev">Ecosystem</a>
+    </header>
+
+    <main>
+        <div class="logo">
+            <span>Z</span><span>a</span><span>l</span><span>o</span><span>r</span><span>F</span><span>o</span><span>r</span><span>g</span><span>e</span>
+        </div>
+
+        <div class="search-box">
+            <svg class="search-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+            <input type="text" class="search-input" placeholder="Search ZalorForge ecosystem or type a command..." autofocus>
+        </div>
+
+        <div class="buttons">
+            <a href="https://zalorforge.pages.dev" class="btn">Explore Ecosystem</a>
+            <a href="https://github.com/your-username/zalorforge/graphs/contributors" target="_blank" class="btn">Contributors</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-row">
+            <span>Ethical • Sustainable • High Performance</span>
+            <div class="footer-links">
+                <a href="https://zalorforge.pages.dev">ZalorForge Cloud</a>
+                <a href="https://github.com/your-username/zalorforge" target="_blank">Source Code</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

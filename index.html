@@ -75,6 +75,7 @@
         .header-left {
             display: flex;
             gap: 12px;
+            align-items: center;
         }
 
         .control-btn {
@@ -123,6 +124,37 @@
 
         .header-right a:hover {
             color: var(--accent-color);
+        }
+
+        .sign-in-btn {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.25);
+        }
+
+        .sign-in-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.95;
+            box-shadow: 0 6px 16px rgba(88, 166, 255, 0.35);
+        }
+
+        .sign-in-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
         }
 
         main {
@@ -391,8 +423,12 @@
             </button>
         </div>
         <div class="header-right">
-            <a href="https://github.com/bdinkatomas-dev/ZalorForge" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://github.com/zalorforge" target="_blank" rel="noopener noreferrer">GitHub</a>
             <a href="#ecosystem" id="navEcosystem">Ecosystem</a>
+            <a href="https://zalorforge.pages.dev/sign-in/" class="sign-in-btn">
+                <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                <span id="signInLabel">Sign In</span>
+            </a>
         </div>
     </header>
 
@@ -441,7 +477,8 @@
                 contributorsTitle: "Contributors",
                 ecosystem: "Ecosystem",
                 tagline: "Ethical • High-Performance • Sustainable Ecosystem",
-                noResults: "No results found"
+                noResults: "No results found",
+                signIn: "Sign In"
             },
             cs: {
                 searchPlaceholder: "Hledat aplikace, příkazy nebo dokumenty...",
@@ -449,7 +486,8 @@
                 contributorsTitle: "Přispěvatelé",
                 ecosystem: "Ekosystém",
                 tagline: "Etický • Vysoce výkonný • Udržitelný ekosystém",
-                noResults: "Žádné výsledky"
+                noResults: "Žádné výsledky",
+                signIn: "Přihlásit"
             }
         };
 
@@ -468,6 +506,7 @@
             document.getElementById('navEcosystem').textContent = t.ecosystem;
             document.getElementById('taglineText').textContent = t.tagline;
             document.getElementById('langLabel').textContent = currentLang.toUpperCase();
+            document.getElementById('signInLabel').textContent = t.signIn;
             
             const themeLabel = document.getElementById('themeLabel');
             themeLabel.textContent = currentTheme === 'dark' ? (currentLang === 'cs' ? 'Tmavý' : 'Dark') : (currentLang === 'cs' ? 'Světlý' : 'Light');

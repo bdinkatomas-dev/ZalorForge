@@ -4,4 +4,9 @@ const appsData = [
         logo: "/uploads/check.png",
         url: "/check/"
     },
+    {
+        name: "Write",
+        logo: "/uploads/check.png",
+        url: "/write/"
+    },
 ];

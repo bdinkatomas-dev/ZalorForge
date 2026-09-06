@@ -6,7 +6,7 @@ const appsData = [
     },
     {
         name: "Write",
-        logo: "/uploads/check.png",
+        logo: "/uploads/write.png",
         url: "/write/"
     },
 ];

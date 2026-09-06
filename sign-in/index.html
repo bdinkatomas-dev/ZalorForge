@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="cs" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZalorForge — Sign In / Register</title>
+    <style>
+        :root[data-theme="dark"] {
+            --bg-color: #0d1117;
+            --surface-color: #161b22;
+            --surface-hover: #1f242c;
+            --text-color: #f0f6fc;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --accent-color: #58a6ff;
+            --accent-gradient: linear-gradient(135deg, #58a6ff, #bc8cff);
+            --shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.6);
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        :root[data-theme="light"] {
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --surface-hover: #f1f5f9;
+            --text-color: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --accent-color: #2563eb;
+            --accent-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100dvh;
+            justify-content: space-between;
+            align-items: center;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        @keyframes heroEntrance {
+            0% { opacity: 0; transform: translateY(24px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            padding: 24px 32px;
+            align-items: center;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .back-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent-color);
+        }
+
+        .back-link svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 20px;
+            width: 100%;
+            max-width: 420px;
+            animation: heroEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .logo-title {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .choice-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .choice-btn {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .choice-btn:hover {
+            border-color: var(--accent-color);
+            background-color: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+
+        .choice-btn.primary {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 4px 15px rgba(88, 166, 255, 0.25);
+        }
+
+        .form-screen {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-screen.active {
+            display: flex;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding-left: 4px;
+        }
+
+        .text-input {
+            width: 100%;
+            height: 48px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 0 16px;
+            color: var(--text-color);
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .text-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+        }
+
+        .submit-btn {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border: none;
+            height: 48px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 8px;
+            box-shadow: 0 4px 15px rgba(88, 166, 255, 0.25);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.95;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 12px;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: var(--text-color);
+        }
+
+        .status-msg {
+            font-size: 12px;
+            text-align: center;
+            min-height: 18px;
+            margin-top: 10px;
+        }
+
+        .status-msg.error {
+            color: #f87171;
+        }
+
+        .status-msg.success {
+            color: #4ade80;
+        }
+
+        footer {
+            padding: 20px 32px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../" class="back-link">
+            <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            <span>Zpět domů</span>
+        </a>
+    </header>
+
+    <main>
+        <div class="card">
+            <h1 class="logo-title">ZalorForge</h1>
+            <p class="subtitle" id="subTitle">Zvolte možnost pokračování</p>
+
+            <div id="choiceScreen" class="choice-screen">
+                <button class="choice-btn primary" onclick="showForm('register')">
+                    <span>Vytvořit nový účet</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+                <button class="choice-btn" onclick="showForm('login')">
+                    <span>Mám již účet (Přihlásit)</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+            </div>
+
+            <form id="registerForm" class="form-screen" onsubmit="handleAuth(event, 'register')">
+                <div class="input-group">
+                    <label class="input-label">Jméno</label>
+                    <input type="text" id="regName" class="text-input" required placeholder="Vaše jméno">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Email</label>
+                    <input type="email" id="regEmail" class="text-input" required placeholder="name@example.com">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Heslo</label>
+                    <input type="password" id="regPassword" class="text-input" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="submit-btn">Zaregistrovat se</button>
+                <button type="button" class="back-btn" onclick="resetToChoice()">Zpět</button>
+                <div id="regStatus" class="status-msg"></div>
+            </form>
+
+            <form id="loginForm" class="form-screen" onsubmit="handleAuth(event, 'login')">
+                <div class="input-group">
+                    <label class="input-label">Email</label>
+                    <input type="email" id="logEmail" class="text-input" required placeholder="name@example.com">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Heslo</label>
+                    <input type="password" id="logPassword" class="text-input" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="submit-btn">Přihlásit se</button>
+                <button type="button" class="back-btn" onclick="resetToChoice()">Zpět</button>
+                <div id="logStatus" class="status-msg"></div>
+            </form>
+
+        </div>
+    </main>
+
+    <footer>
+        © ZalorForge Project • Cloudflare Functions & Turso DB
+    </footer>
+
+    <script>
+        function showForm(type) {
+            document.getElementById('choiceScreen').style.display = 'none';
+            document.getElementById('registerForm').classList.remove('active');
+            document.getElementById('loginForm').classList.remove('active');
+
+            if (type === 'register') {
+                document.getElementById('registerForm').classList.add('active');
+                document.getElementById('subTitle').textContent = 'Vytvořte si nový účet v ekosystému';
+            } else {
+                document.getElementById('loginForm').classList.add('active');
+                document.getElementById('subTitle').textContent = 'Přihlaste se ke svému účtu';
+            }
+        }
+
+        function resetToChoice() {
+            document.getElementById('choiceScreen').style.display = 'flex';
+            document.getElementById('registerForm').classList.remove('active');
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('subTitle').textContent = 'Zvolte možnost pokračování';
+            document.getElementById('regStatus').textContent = '';
+            document.getElementById('logStatus').textContent = '';
+        }
+
+        async function handleAuth(event, action) {
+            event.preventDefault();
+            
+            const isRegister = action === 'register';
+            const statusEl = document.getElementById(isRegister ? 'regStatus' : 'logStatus');
+            
+            const payload = {
+                action: action,
+                email: document.getElementById(isRegister ? 'regEmail' : 'logEmail').value.trim().toLowerCase(),
+                password: document.getElementById(isRegister ? 'regPassword' : 'logPassword').value
+            };
+
+            if (isRegister) {
+                payload.name = document.getElementById('regName').value.trim();
+            }
+
+            statusEl.textContent = isRegister ? "Zpracovávám..." : "Ověřuji...";
+            statusEl.className = "status-msg";
+
+            try {
+                // Volání zabezpečené Cloudflare Pages Function
+                const response = await fetch('/api/auth', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    statusEl.textContent = isRegister ? "Účet úspěšně vytvořen! Přesměrovávám..." : "Přihlášení úspěšné! Vítejte zpět.";
+                    statusEl.className = "status-msg success";
+                    setTimeout(() => window.location.href = "../", 1500);
+                } else {
+                    statusEl.textContent = result.error || "Došlo k chybě.";
+                    statusEl.className = "status-msg error";
+                }
+            } catch (err) {
+                statusEl.textContent = "Chyba připojení k serveru.";
+                statusEl.className = "status-msg error";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZalorForge — Ecosystem</title>
+    <title>ZalorForge — Home</title>
     <style>
         :root[data-theme="dark"] {
             --bg-color: #0d1117;
@@ -14,7 +14,7 @@
             --border-color: #30363d;
             --accent-color: #58a6ff;
             --accent-gradient: linear-gradient(135deg, #58a6ff, #bc8cff);
-            --shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.6);
+            --shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.7);
             --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -27,7 +27,7 @@
             --border-color: #e2e8f0;
             --accent-color: #2563eb;
             --accent-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -47,18 +47,9 @@
             min-height: 100vh;
             min-height: 100dvh;
             justify-content: space-between;
+            align-items: center;
             overflow-x: hidden;
             transition: background-color 0.3s, color 0.3s;
-        }
-
-        @keyframes heroEntrance {
-            0% { opacity: 0; transform: translateY(24px) scale(0.98); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes cardPop {
-            0% { opacity: 0; transform: translateY(16px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         header {
@@ -66,13 +57,21 @@
             justify-content: space-between;
             padding: 24px 32px;
             align-items: center;
-            animation: heroEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-            max-width: 1100px;
             width: 100%;
-            margin: 0 auto;
+            max-width: 1100px;
         }
 
-        .header-left {
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .header-right {
             display: flex;
             gap: 12px;
             align-items: center;
@@ -90,497 +89,214 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            text-decoration: none;
             transition: var(--transition);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .control-btn:hover {
             border-color: var(--accent-color);
             background: var(--surface-hover);
-            transform: translateY(-1px);
         }
 
-        .control-btn svg {
-            width: 14px;
-            height: 14px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-        }
-
-        .header-right {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .header-right a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .header-right a:hover {
-            color: var(--accent-color);
-        }
-
-        .sign-in-btn {
+        .control-btn.primary {
             background: var(--accent-gradient);
             color: #ffffff;
             border: none;
-            padding: 8px 16px;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 20px;
-            cursor: pointer;
-            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(88, 166, 255, 0.25);
+        }
+
+        .user-badge {
             display: flex;
             align-items: center;
-            gap: 6px;
-            transition: var(--transition);
-            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.25);
+            gap: 8px;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
         }
 
-        .sign-in-btn:hover {
-            transform: translateY(-1px);
-            opacity: 0.95;
-            box-shadow: 0 6px 16px rgba(88, 166, 255, 0.35);
-        }
-
-        .sign-in-btn svg {
-            width: 14px;
-            height: 14px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
+        .user-badge span {
+            color: var(--accent-color);
         }
 
         main {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             flex-grow: 1;
-            padding: 0 20px 60px 20px;
-            max-width: 760px;
+            padding: 20px;
             width: 100%;
-            margin: 0 auto;
-        }
-
-        .logo-container {
+            max-width: 600px;
             text-align: center;
-            margin-bottom: 36px;
-            animation: heroEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
 
-        .logo {
-            font-size: clamp(40px, 8vw, 60px);
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            user-select: none;
-            margin-bottom: 8px;
-        }
-
-        .tagline {
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        .search-box {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            height: 54px;
+        .hero-card {
             background-color: var(--surface-color);
             border: 1px solid var(--border-color);
             border-radius: 28px;
-            padding: 0 20px;
+            padding: 48px 32px;
+            width: 100%;
             box-shadow: var(--shadow);
             transition: var(--transition);
-            animation: heroEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
 
-        .search-box:hover, .search-box:focus-within {
-            border-color: var(--accent-color);
-            box-shadow: 0 6px 25px rgba(88, 166, 255, 0.15);
-            transform: translateY(-2px);
+        .hero-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
         }
 
-        .search-icon {
-            width: 20px;
-            height: 20px;
-            fill: var(--text-secondary);
-            margin-right: 14px;
-            transition: fill 0.2s;
-            flex-shrink: 0;
-        }
-
-        .search-box:focus-within .search-icon {
-            fill: var(--accent-color);
-        }
-
-        .search-input {
-            flex-grow: 1;
-            border: none;
-            outline: none;
-            background: transparent;
-            color: var(--text-color);
-            font-size: 16px;
-        }
-
-        .search-input::placeholder {
+        .hero-desc {
+            font-size: 15px;
             color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 32px;
         }
 
-        .content-sections {
-            width: 100%;
-            margin-top: 44px;
+        .action-container {
             display: flex;
-            flex-direction: column;
-            gap: 36px;
-        }
-
-        .section-group {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .section-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            padding-left: 4px;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
-            gap: 16px;
-        }
-
-        .shortcut-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            padding: 14px 8px;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 18px;
-            transition: var(--transition);
-            animation: cardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
-
-        .shortcut-item:hover {
-            background-color: var(--surface-hover);
-            border-color: var(--accent-color);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
-        }
-
-        .shortcut-item:active {
-            transform: translateY(-1px);
-        }
-
-        .shortcut-icon-wrapper {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
+            gap: 12px;
             justify-content: center;
-            margin-bottom: 10px;
-            overflow: hidden;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
             transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(88, 166, 255, 0.3);
         }
 
-        .shortcut-item:hover .shortcut-icon-wrapper {
-            border-color: var(--accent-color);
-            transform: scale(1.05);
-        }
-
-        .shortcut-icon-wrapper img,
-        .shortcut-icon-wrapper svg {
-            width: 28px;
-            height: 28px;
-            object-fit: contain;
-        }
-
-        .shortcut-name {
-            font-size: 12px;
-            color: var(--text-color);
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-            font-weight: 500;
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
         }
 
         footer {
-            background-color: var(--surface-color);
+            padding: 24px 32px;
             color: var(--text-secondary);
             font-size: 12px;
-            border-top: 1px solid var(--border-color);
-            padding: 20px 32px;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-
-        .footer-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-links a:hover {
-            color: var(--accent-color);
+            text-align: center;
         }
 
         @media (max-width: 600px) {
-            header {
-                padding: 16px 20px;
-            }
-
-            main {
-                padding: 0 16px 40px 16px;
-            }
-
-            .logo-container {
-                margin-bottom: 24px;
-            }
-
-            .search-box {
-                height: 48px;
-                padding: 0 16px;
-            }
-
-            .grid-container {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 12px;
-            }
-
-            .shortcut-item {
-                padding: 12px 6px;
-                border-radius: 14px;
-            }
-
-            .shortcut-icon-wrapper {
-                width: 42px;
-                height: 42px;
-                border-radius: 12px;
-                margin-bottom: 8px;
-            }
-
-            footer {
-                padding: 16px 20px;
-                text-align: center;
-            }
-
-            .footer-row {
-                flex-direction: column;
-                justify-content: center;
-                gap: 12px;
-            }
+            header { padding: 16px 20px; }
+            .hero-card { padding: 32px 20px; border-radius: 22px; }
+            .hero-title { font-size: 26px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="header-left">
-            <button class="control-btn" onclick="toggleTheme()">
-                <svg viewBox="0 0 24 24" id="themeIcon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                <span id="themeLabel">Dark</span>
-            </button>
-            <button class="control-btn" onclick="toggleLanguage()">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                <span id="langLabel">CZ</span>
-            </button>
-        </div>
+        <a href="#" class="logo">ZalorForge</a>
         <div class="header-right">
-            <a href="https://github.com/zalorforge" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="#ecosystem" id="navEcosystem">Ecosystem</a>
-            <a href="https://zalorforge.pages.dev/sign-in/" class="sign-in-btn">
-                <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                <span id="signInLabel">Sign In</span>
-            </a>
+            <!-- Dynamický blok pro přihlášeného uživatele nebo přihlašovací tlačítko -->
+            <div id="authHeaderArea">
+                <a href="sign-in/" class="control-btn primary" id="navSignIn">Sign In</a>
+            </div>
+            <button class="control-btn" onclick="toggleLanguage()">
+                <span id="langLabel">EN</span>
+            </button>
         </div>
     </header>
 
     <main>
-        <div class="logo-container">
-            <h1 class="logo">ZalorForge</h1>
-            <p class="tagline" id="taglineText">Ethical • High-Performance • Sustainable Ecosystem</p>
-        </div>
-
-        <div class="search-box">
-            <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search apps, commands or documents...">
-        </div>
-
-        <div class="content-sections">
-            <div class="section-group">
-                <div class="section-title" id="appsTitle">Applications</div>
-                <div id="apps-grid" class="grid-container"></div>
-            </div>
-
-            <div class="section-group">
-                <div class="section-title" id="contributorsTitle">Contributors</div>
-                <div id="contributors-grid" class="grid-container"></div>
+        <div class="hero-card">
+            <h1 class="hero-title" id="heroTitle">Vítejte v ZalorForge</h1>
+            <p class="hero-desc" id="heroDesc">Vysoce optimalizovaný ekosystém pro vaše moderní webové aplikace s podporou Turso DB a Cloudflare.</p>
+            <div class="action-container" id="heroAction">
+                <a href="sign-in/" class="cta-btn" id="ctaBtn">Začít ihned</a>
             </div>
         </div>
     </main>
 
     <footer>
-        <div class="footer-row">
-            <span id="footerCopy">© ZalorForge Project • Zero-Cost Infrastructure</span>
-            <div class="footer-links">
-                <a href="https://turso.tech" target="_blank" rel="noopener noreferrer">Turso DB</a>
-                <a href="https://pages.cloudflare.com" target="_blank" rel="noopener noreferrer">Cloudflare</a>
-                <a href="https://render.com" target="_blank" rel="noopener noreferrer">Render API</a>
-            </div>
-        </div>
+        © ZalorForge Project • Cloudflare Functions & Turso DB
     </footer>
 
-    <script src="apps.js"></script>
-    <script src="contributors.js"></script>
     <script>
         const i18n = {
-            en: {
-                searchPlaceholder: "Search apps, commands or documents...",
-                appsTitle: "Applications",
-                contributorsTitle: "Contributors",
-                ecosystem: "Ecosystem",
-                tagline: "Ethical • High-Performance • Sustainable Ecosystem",
-                noResults: "No results found",
-                signIn: "Sign In"
-            },
             cs: {
-                searchPlaceholder: "Hledat aplikace, příkazy nebo dokumenty...",
-                appsTitle: "Aplikace",
-                contributorsTitle: "Přispěvatelé",
-                ecosystem: "Ekosystém",
-                tagline: "Etický • Vysoce výkonný • Udržitelný ekosystém",
-                noResults: "Žádné výsledky",
-                signIn: "Přihlásit"
+                signIn: "Přihlásit se",
+                signOut: "Odhlásit",
+                welcomeUser: "Uživatel:",
+                heroTitle: "Vítejte v ZalorForge",
+                heroDesc: "Vysoce optimalizovaný ekosystém pro vaše moderní webové aplikace s podporou Turso DB a Cloudflare.",
+                ctaBtn: "Otevřít profil",
+                ctaDefault: "Začít ihned"
+            },
+            en: {
+                signIn: "Sign In",
+                signOut: "Sign Out",
+                welcomeUser: "User:",
+                heroTitle: "Welcome to ZalorForge",
+                heroDesc: "Highly optimized ecosystem for your modern web applications powered by Turso DB and Cloudflare.",
+                ctaBtn: "Open Profile",
+                ctaDefault: "Get Started"
             }
         };
 
         let currentLang = localStorage.getItem('zalorforge_lang') || 'cs';
-        let currentTheme = localStorage.getItem('zalorforge_theme') || 'dark';
-        let allApps = [];
-        let allContributors = [];
 
-        document.documentElement.setAttribute('data-theme', currentTheme);
-
-        function updateUIStrings() {
+        function updateUI() {
             const t = i18n[currentLang];
-            document.getElementById('searchInput').placeholder = t.searchPlaceholder;
-            document.getElementById('appsTitle').textContent = t.appsTitle;
-            document.getElementById('contributorsTitle').textContent = t.contributorsTitle;
-            document.getElementById('navEcosystem').textContent = t.ecosystem;
-            document.getElementById('taglineText').textContent = t.tagline;
-            document.getElementById('langLabel').textContent = currentLang.toUpperCase();
-            document.getElementById('signInLabel').textContent = t.signIn;
-            
-            const themeLabel = document.getElementById('themeLabel');
-            themeLabel.textContent = currentTheme === 'dark' ? (currentLang === 'cs' ? 'Tmavý' : 'Dark') : (currentLang === 'cs' ? 'Světlý' : 'Light');
-        }
+            const savedName = localStorage.getItem('zalorforge_name');
+            const savedEmail = localStorage.getItem('zalorforge_email');
 
-        function toggleTheme() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            localStorage.setItem('zalorforge_theme', currentTheme);
-            updateUIStrings();
+            const authArea = document.getElementById('authHeaderArea');
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const ctaBtn = document.getElementById('ctaBtn');
+
+            heroTitle.textContent = t.heroTitle;
+            heroDesc.textContent = t.heroDesc;
+            document.getElementById('langLabel').textContent = currentLang === 'cs' ? 'EN' : 'CS';
+
+            if (savedEmail) {
+                // Uživatel je přihlášený
+                const displayName = savedName || savedEmail.split('@')[0];
+                authArea.innerHTML = `
+                    <div class="user-badge">
+                        👤 <span>${displayName}</span>
+                    </div>
+                    <button class="control-btn" onclick="handleSignOut()">${t.signOut}</button>
+                `;
+                ctaBtn.textContent = t.ctaBtn;
+            } else {
+                // Uživatel přihlášený není
+                authArea.innerHTML = `
+                    <a href="sign-in/" class="control-btn primary" id="navSignIn">${t.signIn}</a>
+                `;
+                ctaBtn.textContent = t.ctaDefault;
+            }
         }
 
         function toggleLanguage() {
             currentLang = currentLang === 'cs' ? 'en' : 'cs';
             localStorage.setItem('zalorforge_lang', currentLang);
-            updateUIStrings();
+            updateUI();
         }
 
-        function renderGrid(containerId, items) {
-            const container = document.getElementById(containerId);
-            if (!container || !Array.isArray(items)) return;
-            
-            const t = i18n[currentLang];
-            if (items.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); font-size: 13px; padding: 12px;">${t.noResults}</div>`;
-                return;
-            }
-
-            container.innerHTML = items.map((item, index) => {
-                let logoMarkup = '';
-                const logo = item.logo ? item.logo.trim() : '';
-
-                if (logo.startsWith('<svg')) {
-                    logoMarkup = logo;
-                } else if (logo.length > 0) {
-                    logoMarkup = `<img src="${logo}" alt="${item.name}" onerror="this.onerror=null; this.src='https://api.iconify.design/lucide:box.svg?color=%238b949e'">`;
-                } else {
-                    logoMarkup = `<img src="https://api.iconify.design/lucide:box.svg?color=%238b949e" alt="${item.name}">`;
-                }
-
-                return `
-                    <a href="${item.url}" class="shortcut-item" target="_blank" rel="noopener noreferrer" style="animation-delay: ${index * 0.04}s">
-                        <div class="shortcut-icon-wrapper">
-                            ${logoMarkup}
-                        </div>
-                        <span class="shortcut-name">${item.name}</span>
-                    </a>
-                `;
-            }).join('');
+        function handleSignOut() {
+            // Vymazání údajů o přihlášení z localStorage
+            localStorage.removeItem('zalorforge_name');
+            localStorage.removeItem('zalorforge_email');
+            updateUI();
         }
 
-        function filterAndRender() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-
-            const filteredApps = allApps.filter(item => item.name.toLowerCase().includes(query));
-            const filteredContributors = allContributors.filter(item => item.name.toLowerCase().includes(query));
-
-            renderGrid('apps-grid', filteredApps);
-            renderGrid('contributors-grid', filteredContributors);
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof appsData !== 'undefined') allApps = appsData;
-            if (typeof contributorsData !== 'undefined') allContributors = contributorsData;
-
-            updateUIStrings();
-            renderGrid('apps-grid', allApps);
-            renderGrid('contributors-grid', allContributors);
-
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', filterAndRender);
-            }
-        });
+        document.addEventListener("DOMContentLoaded", updateUI);
     </script>
 </body>
 </html>

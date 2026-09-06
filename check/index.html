@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zalorforge-check — Calendar & Tasks</title>
+    <title>Check — Kalendář & Úkoly</title>
     <style>
         :root[data-theme="dark"] {
-            --bg-color: #0b0f19;
-            --surface-color: #131b2e;
-            --surface-hover: #1c2640;
-            --text-color: #f3f6fc;
-            --text-secondary: #8b9ab3;
-            --border-color: #26334f;
-            --accent-color: #3b82f6;
-            --accent-gradient: linear-gradient(135deg, #3b82f6, #6366f1);
-            --event-color: #f59e0b;
-            --danger-color: #ef4444;
-            --success-color: #10b981;
-            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-            --modal-bg: rgba(11, 15, 25, 0.8);
+            --bg-color: #0d1117;
+            --surface-color: #161b22;
+            --surface-hover: #1f242c;
+            --text-color: #f0f6fc;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --accent-color: #58a6ff;
+            --accent-gradient: linear-gradient(135deg, #58a6ff, #bc8cff);
+            --danger-color: #f87171;
+            --success-color: #3fb950;
+            --shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.6);
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         :root[data-theme="light"] {
@@ -30,11 +29,10 @@
             --border-color: #e2e8f0;
             --accent-color: #2563eb;
             --accent-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
-            --event-color: #d97706;
-            --danger-color: #dc2626;
-            --success-color: #059669;
+            --danger-color: #ef4444;
+            --success-color: #16a34a;
             --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            --modal-bg: rgba(15, 23, 42, 0.5);
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
@@ -43,1022 +41,616 @@
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100dvh;
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .app-container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            max-width: 1500px;
-            background-color: var(--bg-color);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Sidebar / Management Panel */
-        .sidebar {
-            width: 420px;
-            background-color: var(--surface-color);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            gap: 16px;
-            z-index: 10;
-            flex-shrink: 0;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-
-        .brand {
+        header {
             display: flex;
             justify-content: space-between;
+            padding: 20px 32px;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--surface-color);
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            gap: 10px;
             align-items: center;
         }
 
-        .brand h2 {
+        .logo {
             font-size: 20px;
             font-weight: 800;
-            letter-spacing: -0.5px;
             background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-decoration: none;
         }
 
-        .settings-bar {
-            display: flex;
-            gap: 10px;
-        }
-
-        .settings-btn {
-            flex: 1;
-            background: var(--bg-color);
+        .control-btn {
+            background: var(--surface-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 9px;
+            padding: 8px 14px;
             font-size: 12px;
             font-weight: 600;
-            border-radius: 10px;
+            border-radius: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 6px;
-            transition: all 0.2s;
+            transition: var(--transition);
+            text-decoration: none;
+            white-space: nowrap;
         }
 
-        .settings-btn:hover {
+        .control-btn:hover {
             border-color: var(--accent-color);
             background: var(--surface-hover);
         }
 
-        .type-selector {
+        .control-btn.primary {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border: none;
+        }
+
+        main {
+            flex-grow: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 20px;
             display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            background: var(--surface-color);
+            padding: 6px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            width: fit-content;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .view-section {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .view-section.active {
+            display: flex;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        input, select, textarea {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            flex-grow: 1;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-color);
+        }
+
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            transition: var(--transition);
+            gap: 12px;
+        }
+
+        .item-row:hover {
+            border-color: var(--accent-color);
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            overflow: hidden;
+        }
+
+        .item-title {
+            font-weight: 500;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .item-title.completed {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .item-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: var(--danger-color);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .delete-btn:hover {
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        /* Kalendář mřížka */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            text-align: center;
+        }
+
+        .calendar-day-header {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            text-transform: uppercase;
+        }
+
+        .calendar-cell {
+            aspect-ratio: 1;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 4px;
-        }
-
-        .type-btn {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            padding: 9px;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: all 0.2s ease;
-        }
-
-        .type-btn.active {
-            background: var(--surface-color);
-            color: var(--text-color);
-            box-shadow: var(--shadow);
-        }
-
-        .form-panel {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            padding: 14px;
-            border-radius: 14px;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .input-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px 14px;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            border-radius: 10px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        input:focus {
+        .calendar-cell:hover {
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-        button.action-btn {
-            background: var(--accent-gradient);
-            color: #ffffff;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        .items-list {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding-right: 4px;
-        }
-
-        .items-list::-webkit-scrollbar {
-            width: 4px;
-        }
-        .items-list::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 10px;
-        }
-
-        .item-card {
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            padding: 12px 14px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-        }
-
-        .item-card.completed span {
-            text-decoration: line-through;
-            color: var(--text-secondary);
-        }
-
-        .item-actions {
-            display: flex;
-            gap: 6px;
-        }
-
-        .item-actions button {
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-            padding: 6px 10px;
-            font-size: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.2s;
-        }
-
-        .item-actions button:hover {
-            color: var(--danger-color);
-            border-color: var(--danger-color);
-        }
-
-        /* Main Content View */
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            overflow: hidden;
-            background-color: var(--bg-color);
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            flex-shrink: 0;
-        }
-
-        .calendar-header h1 {
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .calendar-nav {
-            display: flex;
-            gap: 4px;
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            padding: 3px;
-            border-radius: 10px;
-        }
-
-        .calendar-nav button {
-            background: transparent;
-            color: var(--text-color);
-            border: none;
-            padding: 6px 12px;
-            border-radius: 7px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 12px;
-            transition: all 0.2s;
-        }
-
-        .calendar-nav button:hover {
+        .calendar-cell.today {
+            border-color: var(--accent-color);
             background: var(--surface-hover);
-            color: var(--accent-color);
         }
 
-        .weekdays {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            text-align: center;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            flex-shrink: 0;
-        }
-
-        .days-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: minmax(90px, 1fr);
-            gap: 8px;
-            flex-grow: 1;
-            overflow-y: auto;
-            padding-bottom: 20px;
-        }
-
-        .days-grid::-webkit-scrollbar {
-            width: 4px;
-        }
-        .days-grid::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 10px;
-        }
-
-        .day-cell {
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            overflow-y: auto;
-            min-height: 0;
-            cursor: pointer;
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-
-        .day-cell:hover {
-            border-color: var(--accent-color);
-            background-color: var(--surface-hover);
-        }
-
-        .day-cell::-webkit-scrollbar {
-            display: none;
-        }
-
-        .day-cell.today {
-            border-color: var(--accent-color);
-            background-color: var(--surface-hover);
-        }
-
-        .day-number {
+        .calendar-date {
             font-size: 13px;
-            font-weight: 700;
-            color: var(--text-secondary);
-        }
-
-        .day-cell.today .day-number {
-            color: var(--accent-color);
-        }
-
-        .calendar-tag {
-            background-color: var(--bg-color);
-            padding: 4px 8px;
-            font-size: 11px;
-            border-radius: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            border: 1px solid var(--border-color);
-            font-weight: 500;
-        }
-
-        .calendar-tag.task {
-            border-left: 2px solid var(--accent-color);
-        }
-
-        .calendar-tag.event {
-            border-left: 2px solid var(--event-color);
-        }
-
-        .calendar-tag.completed {
-            opacity: 0.4;
-            text-decoration: line-through;
-        }
-
-        /* Modal Menu pro konkrétní den */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--modal-bg);
-            backdrop-filter: blur(4px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            width: 90%;
-            max-width: 450px;
-            max-height: 80vh;
-            border-radius: 16px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            box-shadow: var(--shadow);
-            transform: scale(0.95);
-            transition: transform 0.2s ease;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 {
-            font-size: 18px;
-            font-weight: 800;
-        }
-
-        .close-modal-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            transition: background 0.2s;
-        }
-
-        .close-modal-btn:hover {
-            background: var(--surface-hover);
-            border-color: var(--accent-color);
-        }
-
-        .modal-items-list {
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 50vh;
-            padding-right: 2px;
-        }
-
-        .modal-items-list::-webkit-scrollbar {
-            width: 4px;
-        }
-        .modal-items-list::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 10px;
-        }
-
-        .empty-day-msg {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 13px;
-            padding: 20px 0;
-        }
-
-        /* Toast notification */
-        .toast {
-            position: fixed;
-            bottom: 75px;
-            left: 50%;
-            transform: translateX(-50%) translateY(50px);
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
             font-weight: 600;
-            box-shadow: var(--shadow);
-            z-index: 2000;
-            opacity: 0;
-            transition: transform 0.2s ease, opacity 0.2s ease;
-            pointer-events: none;
         }
 
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        .event-dot {
+            width: 5px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
         }
 
-        /* Mobile Bottom Navigation Bar */
-        .mobile-nav-bar {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 65px;
-            background-color: var(--surface-color);
-            border-top: 1px solid var(--border-color);
-            justify-content: space-around;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .mobile-nav-item {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 11px;
-            font-weight: 600;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-            cursor: pointer;
-        }
-
-        .mobile-nav-item svg {
-            width: 20px;
-            height: 20px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .mobile-nav-item.active {
-            color: var(--accent-color);
-        }
-
-        /* Responsive Breakpoints */
-        @media (max-width: 900px) {
-            body {
-                align-items: flex-start;
+        /* Responzivita pro mobily */
+        @media (max-width: 600px) {
+            header {
+                padding: 14px 16px;
             }
-
-            .app-container {
-                flex-direction: column;
-                height: calc(100vh - 65px);
-                height: calc(100dvh - 65px);
+            main {
+                padding: 16px 12px;
+                gap: 16px;
             }
-
-            .sidebar {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                border-right: none;
-                display: none;
+            .card {
                 padding: 16px;
-                gap: 12px;
+                border-radius: 16px;
             }
-
-            .sidebar.mobile-active {
-                display: flex;
+            .form-row {
+                flex-direction: column;
             }
-
-            .main-content {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                padding: 12px;
-                display: none;
-            }
-
-            .main-content.mobile-active {
-                display: flex;
-            }
-
-            .mobile-nav-bar {
-                display: flex;
-            }
-
-            .calendar-header {
-                margin-bottom: 10px;
-            }
-
-            .calendar-header h1 {
-                font-size: 17px;
-            }
-
-            .weekdays, .days-grid {
-                grid-template-columns: repeat(4, 1fr);
+            .control-btn {
+                padding: 6px 10px;
+                font-size: 11px;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Sidebar / Task & Event Manager -->
-        <div class="sidebar mobile-active" id="sidebarPanel">
-            <div class="brand">
-                <h2>Zalorforge</h2>
-            </div>
-            
-            <div class="settings-bar">
-                <button class="settings-btn" onclick="toggleLanguage()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    <span id="langBtnText">CZ / EN</span>
-                </button>
-                <button class="settings-btn" onclick="toggleTheme()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                    <span id="themeBtnText">Theme</span>
-                </button>
-            </div>
-
-            <div class="type-selector">
-                <button class="type-btn active" id="typeTaskBtn" onclick="switchInputType('task')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                    <span id="labelTask">Task</span>
-                </button>
-                <button class="type-btn" id="typeEventBtn" onclick="switchInputType('event')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    <span id="labelEvent">Event</span>
-                </button>
-            </div>
-
-            <div class="form-panel">
-                <div class="input-group">
-                    <input type="text" id="itemTitle" placeholder="Title...">
-                </div>
-                <div class="input-group" id="timeGroup" style="display: none;">
-                    <input type="time" id="itemTime">
-                </div>
-                <div class="input-group">
-                    <input type="date" id="itemDate">
-                    <button class="action-btn" id="addBtnText" onclick="addItem()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Add
-                    </button>
-                </div>
-            </div>
-
-            <div class="items-list" id="itemsList"></div>
+    <header>
+        <div class="header-left">
+            <a href="#" class="logo">Check</a>
         </div>
-
-        <!-- Main Calendar View -->
-        <div class="main-content" id="calendarPanel">
-            <div class="calendar-header">
-                <h1 id="monthYearDisplay"></h1>
-                <div class="calendar-nav">
-                    <button onclick="changeMonth(-1)" id="prevBtnText">Prev</button>
-                    <button onclick="currentMonthView()" id="todayBtnText">Today</button>
-                    <button onclick="changeMonth(1)" id="nextBtnText">Next</button>
-                </div>
-            </div>
-
-            <div class="weekdays" id="weekdaysGrid"></div>
-            <div class="days-grid" id="daysGrid"></div>
-        </div>
-
-        <!-- Mobile Bottom Navigation Bar -->
-        <div class="mobile-nav-bar">
-            <button class="mobile-nav-item" id="navCalendarBtn" onclick="switchMobileTab('calendar')">
-                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <span id="navCalText">Calendar</span>
+        <div class="header-right">
+            <button class="control-btn" onclick="toggleTheme()">
+                <span id="themeLabel">Tmavý</span>
             </button>
-            <button class="mobile-nav-item active" id="navTasksBtn" onclick="switchMobileTab('tasks')">
-                <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                <span id="navTaskText">Tasks</span>
+            <button class="control-btn" onclick="toggleLanguage()">
+                <span id="langLabel">CZ</span>
             </button>
         </div>
-    </div>
+    </header>
 
-    <!-- Day Detail Modal Menu -->
-    <div class="modal-overlay" id="dayModal" onclick="closeDayModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="modalDateTitle">Detail dne</h3>
-                <button class="close-modal-btn" onclick="closeDayModalDirect()">×</button>
+    <main>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('tasks')" id="tabTasksBtn">Úkoly</button>
+            <button class="tab-btn" onclick="switchTab('calendar')" id="tabCalendarBtn">Kalendář</button>
+        </div>
+
+        <!-- SEKCE ÚKOLY -->
+        <div id="tasksView" class="view-section active card">
+            <div class="section-header">
+                <span class="section-title" id="tasksTitle">Správa úkolů</span>
             </div>
-            <div class="modal-items-list" id="modalItemsList">
-                <!-- Seznam položek pro daný den -->
+            <div class="form-row">
+                <input type="text" id="taskInput" placeholder="Nový úkol...">
+                <input type="date" id="taskDate">
+                <button class="control-btn primary" onclick="addTask()" id="addTaskBtn">Přidat úkol</button>
+            </div>
+            <div id="tasksList" class="items-list"></div>
+        </div>
+
+        <!-- SEKCE KALENDÁŘ -->
+        <div id="calendarView" class="view-section card">
+            <div class="section-header">
+                <span class="section-title" id="calMonthYear">Září 2026</span>
+                <div style="display: flex; gap: 6px;">
+                    <button class="control-btn" onclick="changeMonth(-1)">‹</button>
+                    <button class="control-btn" onclick="changeMonth(1)">›</button>
+                </div>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+                <h4 style="font-size: 14px;" id="eventHeader">Události dne</h4>
+                <div class="form-row">
+                    <input type="text" id="eventInput" placeholder="Nová událost...">
+                    <button class="control-btn primary" onclick="addEvent()" id="addEventBtn">Přidat událost</button>
+                </div>
+                <div id="eventsList" class="items-list"></div>
             </div>
         </div>
-    </div>
-
-    <!-- Toast Notification Element -->
-    <div class="toast" id="toastMessage"></div>
+    </main>
 
     <script>
         const i18n = {
             cs: {
-                task: "Úkol",
-                event: "Událost",
-                add: "Přidat",
-                prev: "Před.",
-                today: "Dnes",
-                next: "Další",
-                done: "Hotovo",
-                undo: "Zpět",
-                del: "Smazat",
-                titlePlaceholder: "Název (např. Narozeniny)...",
-                alertTitle: "Zadejte prosím název.",
-                navCalendar: "Kalendář",
-                navTasks: "Úkoly",
-                toastAdded: "Položka přidána",
-                toastDeleted: "Položka smazána",
-                emptyDay: "Žádné úkoly ani události pro tento den.",
-                weekdays: ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"],
-                months: ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"]
+                tasks: "Úkoly",
+                calendar: "Kalendář",
+                taskManager: "Správa úkolů",
+                newTask: "Nový úkol...",
+                addTask: "Přidat úkol",
+                newEvent: "Nová událost...",
+                addEvent: "Přidat událost",
+                dayEvents: "Události dne",
+                noTasks: "Žádné úkoly",
+                noEvents: "Žádné události pro tento den",
+                delete: "Smazat",
+                dark: "Tmavý",
+                light: "Světlý",
+                months: ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"],
+                days: ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"]
             },
             en: {
-                task: "Task",
-                event: "Event",
-                add: "Add",
-                prev: "Prev",
-                today: "Today",
-                next: "Next",
-                done: "Done",
-                undo: "Undo",
-                del: "Del",
-                titlePlaceholder: "Title (e.g. Birthday)...",
-                alertTitle: "Please enter a title.",
-                navCalendar: "Calendar",
-                navTasks: "Tasks",
-                toastAdded: "Item added",
-                toastDeleted: "Item deleted",
-                emptyDay: "No tasks or events for this day.",
-                weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+                tasks: "Tasks",
+                calendar: "Calendar",
+                taskManager: "Task Manager",
+                newTask: "New task...",
+                addTask: "Add task",
+                newEvent: "New event...",
+                addEvent: "Add event",
+                dayEvents: "Day Events",
+                noTasks: "No tasks",
+                noEvents: "No events for this day",
+                delete: "Delete",
+                dark: "Dark",
+                light: "Light",
+                months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                days: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
             }
         };
 
-        let currentLang = localStorage.getItem('zalorforge_lang') || 'cs';
-        let currentTheme = localStorage.getItem('zalorforge_theme') || 'dark';
-        let items = JSON.parse(localStorage.getItem('zalorforge_items')) || [];
-        let activeType = 'task';
-        let today = new Date();
-        let currentMonth = today.getMonth();
-        let currentYear = today.getFullYear();
-        let currentlyOpenDate = null;
+        let currentLang = localStorage.getItem('check_lang') || 'cs';
+        let currentTheme = localStorage.getItem('check_theme') || 'dark';
+        let appData = { tasks: [], events: [] };
+        let selectedDateStr = new Date().toISOString().split('T')[0];
+        let currentDate = new Date();
 
         document.documentElement.setAttribute('data-theme', currentTheme);
 
-        function showToast(message) {
-            const toast = document.getElementById('toastMessage');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 2000);
+        async function loadData() {
+            let local = localStorage.getItem('check_app_data');
+            if (local) {
+                appData = JSON.parse(local);
+            } else {
+                try {
+                    const userEmail = localStorage.getItem('zalorforge_email') || 'guest';
+                    const res = await fetch(`/api/get-data?email=${encodeURIComponent(userEmail)}`);
+                    if (res.ok) {
+                        appData = await res.json();
+                        localStorage.setItem('check_app_data', JSON.stringify(appData));
+                    }
+                } catch (e) {
+                    console.log("Offline mode");
+                }
+            }
+            updateTexts();
+            renderTasks();
+            renderCalendar();
         }
 
-        function saveSettings() {
-            localStorage.setItem('zalorforge_lang', currentLang);
-            localStorage.setItem('zalorforge_theme', currentTheme);
-            localStorage.setItem('zalorforge_items', JSON.stringify(items));
+        async function saveDataToStorage() {
+            localStorage.setItem('check_app_data', JSON.stringify(appData));
+            try {
+                const userEmail = localStorage.getItem('zalorforge_email') || 'guest';
+                await fetch('/api/save-item', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail, data: appData })
+                });
+            } catch (e) {
+                console.log("Saved locally only");
+            }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+
+            if (tab === 'tasks') {
+                document.getElementById('tabTasksBtn').classList.add('active');
+                document.getElementById('tasksView').classList.add('active');
+            } else {
+                document.getElementById('tabCalendarBtn').classList.add('active');
+                document.getElementById('calendarView').classList.add('active');
+                renderCalendar();
+            }
         }
 
         function toggleTheme() {
             currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', currentTheme);
-            saveSettings();
+            localStorage.setItem('check_theme', currentTheme);
+            updateTexts();
         }
 
         function toggleLanguage() {
             currentLang = currentLang === 'cs' ? 'en' : 'cs';
-            saveSettings();
-            render();
-            if (currentlyOpenDate) openDayModal(currentlyOpenDate);
+            localStorage.setItem('check_lang', currentLang);
+            updateTexts();
+            renderTasks();
+            renderCalendar();
         }
 
-        function switchMobileTab(tab) {
-            const sidebar = document.getElementById('sidebarPanel');
-            const calendar = document.getElementById('calendarPanel');
-            const navTasks = document.getElementById('navTasksBtn');
-            const navCalendar = document.getElementById('navCalendarBtn');
-
-            if (tab === 'tasks') {
-                sidebar.classList.add('mobile-active');
-                calendar.classList.remove('mobile-active');
-                navTasks.classList.add('active');
-                navCalendar.classList.remove('active');
-            } else {
-                sidebar.classList.remove('mobile-active');
-                calendar.classList.add('mobile-active');
-                navCalendar.classList.add('active');
-                navTasks.classList.remove('active');
-            }
-        }
-
-        function switchInputType(type) {
-            activeType = type;
-            const taskBtn = document.getElementById('typeTaskBtn');
-            const eventBtn = document.getElementById('typeEventBtn');
-            const timeGroup = document.getElementById('timeGroup');
-
-            if (type === 'task') {
-                taskBtn.classList.add('active');
-                eventBtn.classList.remove('active');
-                timeGroup.style.display = 'none';
-            } else {
-                eventBtn.classList.add('active');
-                taskBtn.classList.remove('active');
-                timeGroup.style.display = 'flex';
-            }
-        }
-
-        function addItem() {
-            const titleInput = document.getElementById('itemTitle');
-            const dateInput = document.getElementById('itemDate');
-            const timeInput = document.getElementById('itemTime');
+        function updateTexts() {
             const t = i18n[currentLang];
-            
-            if (!titleInput.value.trim()) return alert(t.alertTitle);
+            document.getElementById('tabTasksBtn').textContent = t.tasks;
+            document.getElementById('tabCalendarBtn').textContent = t.calendar;
+            document.getElementById('tasksTitle').textContent = t.taskManager;
+            document.getElementById('taskInput').placeholder = t.newTask;
+            document.getElementById('addTaskBtn').textContent = t.addTask;
+            document.getElementById('eventInput').placeholder = t.newEvent;
+            document.getElementById('addEventBtn').textContent = t.addEvent;
+            document.getElementById('langLabel').textContent = currentLang.toUpperCase();
+            document.getElementById('themeLabel').textContent = currentTheme === 'dark' ? t.dark : t.light;
+            document.getElementById('eventHeader').textContent = `${t.dayEvents} (${selectedDateStr})`;
+        }
 
-            const newItem = {
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const dateInput = document.getElementById('taskDate');
+            if (!input.value.trim()) return;
+
+            appData.tasks.push({
                 id: Date.now(),
-                type: activeType,
-                title: titleInput.value.trim(),
-                date: dateInput.value || new Date().toISOString().split('T')[0],
-                time: activeType === 'event' ? (timeInput.value || '') : '',
+                text: input.value.trim(),
+                date: dateInput.value || '',
                 completed: false
-            };
-
-            items.push(newItem);
-            saveSettings();
-            showToast(t.toastAdded);
-            
-            titleInput.value = '';
-            timeInput.value = '';
-            dateInput.value = '';
-            render();
-            if (currentlyOpenDate) openDayModal(currentlyOpenDate);
-        }
-
-        function toggleComplete(id) {
-            items = items.map(item => item.id === id ? { ...item, completed: !item.completed } : item);
-            saveSettings();
-            render();
-            if (currentlyOpenDate) openDayModal(currentlyOpenDate);
-        }
-
-        function deleteItem(id) {
-            const t = i18n[currentLang];
-            items = items.filter(item => item.id !== id);
-            saveSettings();
-            showToast(t.toastDeleted);
-            render();
-            if (currentlyOpenDate) openDayModal(currentlyOpenDate);
-        }
-
-        function changeMonth(direction) {
-            currentMonth += direction;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            } else if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
-            renderCalendar();
-        }
-
-        function currentMonthView() {
-            currentMonth = today.getMonth();
-            currentYear = today.getFullYear();
-            renderCalendar();
-        }
-
-        function openDayModal(dateString) {
-            currentlyOpenDate = dateString;
-            const modal = document.getElementById('dayModal');
-            const titleEl = document.getElementById('modalDateTitle');
-            const listEl = document.getElementById('modalItemsList');
-            const t = i18n[currentLang];
-
-            // Pěkné zobrazení data v hlavičce modalu
-            const [y, m, d] = dateString.split('-');
-            titleEl.textContent = `${parseInt(d)}. ${t.months[parseInt(m) - 1]} ${y}`;
-
-            listEl.innerHTML = '';
-            const dayItems = items.filter(i => i.date === dateString);
-
-            if (dayItems.length === 0) {
-                listEl.innerHTML = `<div class="empty-day-msg">${t.emptyDay}</div>`;
-            } else {
-                dayItems.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = `item-card ${item.completed ? 'completed' : ''}`;
-                    const badgeText = item.type === 'event' ? (item.time ? item.time : t.event) : t.task;
-
-                    card.innerHTML = `
-                        <div style="overflow: hidden; padding-right: 8px;">
-                            <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600;">
-                                ${item.title}
-                            </span>
-                            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${badgeText}</div>
-                        </div>
-                        <div class="item-actions" style="flex-shrink: 0;">
-                            ${item.type === 'task' ? `<button onclick="toggleComplete(${item.id})">${item.completed ? t.undo : t.done}</button>` : ''}
-                            <button onclick="deleteItem(${item.id})">${t.del}</button>
-                        </div>
-                    `;
-                    listEl.appendChild(card);
-                });
-            }
-
-            modal.classList.add('active');
-        }
-
-        function closeDayModal(e) {
-            if (e.target.id === 'dayModal') {
-                closeDayModalDirect();
-            }
-        }
-
-        function closeDayModalDirect() {
-            document.getElementById('dayModal').classList.remove('active');
-            currentlyOpenDate = null;
-        }
-
-        function render() {
-            const t = i18n[currentLang];
-
-            document.getElementById('labelTask').textContent = t.task;
-            document.getElementById('labelEvent').textContent = t.event;
-            document.getElementById('addBtnText').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> ${t.add}`;
-            document.getElementById('prevBtnText').textContent = t.prev;
-            document.getElementById('todayBtnText').textContent = t.today;
-            document.getElementById('nextBtnText').textContent = t.next;
-            document.getElementById('itemTitle').placeholder = t.titlePlaceholder;
-            document.getElementById('navCalText').textContent = t.navCalendar;
-            document.getElementById('navTaskText').textContent = t.navTasks;
-            
-            document.getElementById('weekdaysGrid').innerHTML = `
-                <div>${t.weekdays[0]}</div>
-                <div>${t.weekdays[1]}</div>
-                <div>${t.weekdays[2]}</div>
-                <div>${t.weekdays[3]}</div>
-            `;
-
-            renderList();
-            renderCalendar();
-        }
-
-        function renderList() {
-            const listContainer = document.getElementById('itemsList');
-            listContainer.innerHTML = '';
-            const t = i18n[currentLang];
-
-            const sortedItems = [...items].sort((a, b) => new Date(a.date) - new Date(b.date));
-
-            sortedItems.forEach(item => {
-                const div = document.createElement('div');
-                div.className = `item-card ${item.completed ? 'completed' : ''}`;
-                
-                const badgeText = item.type === 'event' ? (item.time ? `${item.date} • ${item.time}` : item.date) : item.date;
-
-                div.innerHTML = `
-                    <div style="overflow: hidden; padding-right: 8px;">
-                        <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600;">
-                            ${item.title}
-                        </span>
-                        <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${badgeText}</div>
-                    </div>
-                    <div class="item-actions" style="flex-shrink: 0;">
-                        ${item.type === 'task' ? `<button onclick="toggleComplete(${item.id})">${item.completed ? t.undo : t.done}</button>` : ''}
-                        <button onclick="deleteItem(${item.id})">${t.del}</button>
-                    </div>
-                `;
-                listContainer.appendChild(div);
             });
+
+            input.value = '';
+            dateInput.value = '';
+            saveDataToStorage();
+            renderTasks();
+        }
+
+        function toggleTask(id) {
+            const task = appData.tasks.find(t => t.id === id);
+            if (task) task.completed = !task.completed;
+            saveDataToStorage();
+            renderTasks();
+        }
+
+        function deleteTask(id) {
+            appData.tasks = appData.tasks.filter(t => t.id !== id);
+            saveDataToStorage();
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('tasksList');
+            const t = i18n[currentLang];
+            if (appData.tasks.length === 0) {
+                list.innerHTML = `<div style="text-align:center; color:var(--text-secondary); font-size:13px; padding:12px;">${t.noTasks}</div>`;
+                return;
+            }
+
+            list.innerHTML = appData.tasks.map(task => `
+                <div class="item-row">
+                    <div class="item-info">
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})" style="cursor:pointer; width:18px; height:18px; flex-shrink:0;">
+                        <div>
+                            <div class="item-title ${task.completed ? 'completed' : ''}">${task.text}</div>
+                            ${task.date ? `<div class="item-meta">📅 ${task.date}</div>` : ''}
+                        </div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteTask(${task.id})">${t.delete}</button>
+                </div>
+            `).join('');
         }
 
         function renderCalendar() {
-            const display = document.getElementById('monthYearDisplay');
-            const grid = document.getElementById('daysGrid');
+            const grid = document.getElementById('calendarGrid');
+            const monthYear = document.getElementById('calMonthYear');
             const t = i18n[currentLang];
             
-            display.textContent = `${t.months[currentMonth]} ${currentYear}`;
-            grid.innerHTML = '';
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
 
-            let firstDayIndex = (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
-            let totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+            monthYear.textContent = `${t.months[month]} ${year}`;
+
+            grid.innerHTML = t.days.map(d => `<div class="calendar-day-header">${d}</div>`).join('');
+
+            const firstDayIndex = (new Date(year, month, 1).getDay() + 6) % 7;
+            const totalDays = new Date(year, month + 1, 0).getDate();
+            const todayStr = new Date().toISOString().split('T')[0];
 
             for (let i = 0; i < firstDayIndex; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'day-cell';
-                cell.style.opacity = '0.15';
-                cell.style.cursor = 'default';
-                grid.appendChild(cell);
+                grid.innerHTML += `<div></div>`;
             }
 
             for (let day = 1; day <= totalDays; day++) {
-                const cell = document.createElement('div');
-                cell.className = 'day-cell';
-                
-                const formattedMonth = String(currentMonth + 1).padStart(2, '0');
-                const formattedDay = String(day).padStart(2, '0');
-                const dateString = `${currentYear}-${formattedMonth}-${formattedDay}`;
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const hasEvents = appData.events.some(e => e.date === dateStr);
+                const isToday = dateStr === todayStr;
 
-                if (day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
-                    cell.classList.add('today');
-                }
-
-                cell.innerHTML = `<div class="day-number">${day}</div>`;
-
-                // Kliknutí na buňku otevře detailní menu pro daný den
-                cell.onclick = () => openDayModal(dateString);
-
-                const dayItems = items.filter(i => i.date === dateString);
-                dayItems.forEach(item => {
-                    const tag = document.createElement('div');
-                    tag.className = `calendar-tag ${item.type} ${item.completed ? 'completed' : ''}`;
-                    
-                    const labelPrefix = item.type === 'event' && item.time ? `${item.time} ` : '';
-                    tag.textContent = labelPrefix + item.title;
-                    cell.appendChild(tag);
-                });
-
-                grid.appendChild(cell);
+                grid.innerHTML += `
+                    <div class="calendar-cell ${isToday ? 'today' : ''}" onclick="selectDate('${dateStr}')">
+                        <span class="calendar-date">${day}</span>
+                        ${hasEvents ? '<div class="event-dot"></div>' : ''}
+                    </div>
+                `;
             }
+            renderEventsForSelectedDate();
         }
 
-        render();
+        function changeMonth(dir) {
+            currentDate.setMonth(currentDate.getMonth() + dir);
+            renderCalendar();
+        }
+
+        function selectDate(dateStr) {
+            selectedDateStr = dateStr;
+            updateTexts();
+            renderEventsForSelectedDate();
+        }
+
+        function addEvent() {
+            const input = document.getElementById('eventInput');
+            if (!input.value.trim()) return;
+
+            appData.events.push({
+                id: Date.now(),
+                text: input.value.trim(),
+                date: selectedDateStr
+            });
+
+            input.value = '';
+            saveDataToStorage();
+            renderCalendar();
+        }
+
+        function deleteEvent(id) {
+            appData.events = appData.events.filter(e => e.id !== id);
+            saveDataToStorage();
+            renderCalendar();
+        }
+
+        function renderEventsForSelectedDate() {
+            const list = document.getElementById('eventsList');
+            const t = i18n[currentLang];
+            const dayEvents = appData.events.filter(e => e.date === selectedDateStr);
+
+            if (dayEvents.length === 0) {
+                list.innerHTML = `<div style="text-align:center; color:var(--text-secondary); font-size:13px; padding:12px;">${t.noEvents}</div>`;
+                return;
+            }
+
+            list.innerHTML = dayEvents.map(e => `
+                <div class="item-row">
+                    <div class="item-title">${e.text}</div>
+                    <button class="delete-btn" onclick="deleteEvent(${e.id})">${t.delete}</button>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', loadData);
     </script>
 </body>
 </html>

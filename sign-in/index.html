@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZalorForge — Sign In / Register</title>
+    <title>ZalorForge — Sign In</title>
     <style>
         :root[data-theme="dark"] {
             --bg-color: #0d1117;
@@ -52,11 +52,6 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        @keyframes heroEntrance {
-            0% { opacity: 0; transform: translateY(24px) scale(0.98); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
         header {
             display: flex;
             justify-content: space-between;
@@ -64,6 +59,12 @@
             align-items: center;
             width: 100%;
             max-width: 1100px;
+        }
+
+        .header-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
 
         .back-link {
@@ -89,6 +90,26 @@
             stroke-width: 2;
         }
 
+        .control-btn {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .control-btn:hover {
+            border-color: var(--accent-color);
+            background: var(--surface-hover);
+        }
+
         main {
             display: flex;
             flex-direction: column;
@@ -98,7 +119,6 @@
             padding: 20px;
             width: 100%;
             max-width: 420px;
-            animation: heroEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
 
         .card {
@@ -246,19 +266,19 @@
             margin-top: 10px;
         }
 
-        .status-msg.error {
-            color: #f87171;
-        }
-
-        .status-msg.success {
-            color: #4ade80;
-        }
+        .status-msg.error { color: #f87171; }
+        .status-msg.success { color: #4ade80; }
 
         footer {
             padding: 20px 32px;
             color: var(--text-secondary);
             font-size: 12px;
             text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            header { padding: 16px 20px; }
+            .card { padding: 24px 20px; border-radius: 20px; }
         }
     </style>
 </head>
@@ -267,8 +287,13 @@
     <header>
         <a href="../" class="back-link">
             <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            <span>Zpět domů</span>
+            <span id="navBack">Zpět domů</span>
         </a>
+        <div class="header-left">
+            <button class="control-btn" onclick="toggleLanguage()">
+                <span id="langLabel">EN</span>
+            </button>
+        </div>
     </header>
 
     <main>
@@ -278,47 +303,46 @@
 
             <div id="choiceScreen" class="choice-screen">
                 <button class="choice-btn primary" onclick="showForm('register')">
-                    <span>Vytvořit nový účet</span>
+                    <span id="btnRegChoice">Vytvořit nový účet</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </button>
                 <button class="choice-btn" onclick="showForm('login')">
-                    <span>Mám již účet (Přihlásit)</span>
+                    <span id="btnLoginChoice">Mám již účet (Přihlásit)</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
                 </button>
             </div>
 
             <form id="registerForm" class="form-screen" onsubmit="handleAuth(event, 'register')">
                 <div class="input-group">
-                    <label class="input-label">Jméno</label>
+                    <label class="input-label" id="labelName">Jméno</label>
                     <input type="text" id="regName" class="text-input" required placeholder="Vaše jméno">
                 </div>
                 <div class="input-group">
-                    <label class="input-label">Email</label>
+                    <label class="input-label" id="labelEmailReg">Email</label>
                     <input type="email" id="regEmail" class="text-input" required placeholder="name@example.com">
                 </div>
                 <div class="input-group">
-                    <label class="input-label">Heslo</label>
+                    <label class="input-label" id="labelPassReg">Heslo</label>
                     <input type="password" id="regPassword" class="text-input" required placeholder="••••••••">
                 </div>
-                <button type="submit" class="submit-btn">Zaregistrovat se</button>
-                <button type="button" class="back-btn" onclick="resetToChoice()">Zpět</button>
+                <button type="submit" class="submit-btn" id="btnSubmitReg">Zaregistrovat se</button>
+                <button type="button" class="back-btn" onclick="resetToChoice()" id="btnBackReg">Zpět</button>
                 <div id="regStatus" class="status-msg"></div>
             </form>
 
             <form id="loginForm" class="form-screen" onsubmit="handleAuth(event, 'login')">
                 <div class="input-group">
-                    <label class="input-label">Email</label>
+                    <label class="input-label" id="labelEmailLog">Email</label>
                     <input type="email" id="logEmail" class="text-input" required placeholder="name@example.com">
                 </div>
                 <div class="input-group">
-                    <label class="input-label">Heslo</label>
+                    <label class="input-label" id="labelPassLog">Heslo</label>
                     <input type="password" id="logPassword" class="text-input" required placeholder="••••••••">
                 </div>
-                <button type="submit" class="submit-btn">Přihlásit se</button>
-                <button type="button" class="back-btn" onclick="resetToChoice()">Zpět</button>
+                <button type="submit" class="submit-btn" id="btnSubmitLog">Přihlásit se</button>
+                <button type="button" class="back-btn" onclick="resetToChoice()" id="btnBackLog">Zpět</button>
                 <div id="logStatus" class="status-msg"></div>
             </form>
-
         </div>
     </main>
 
@@ -327,32 +351,101 @@
     </footer>
 
     <script>
+        const i18n = {
+            cs: {
+                back: "Zpět domů",
+                subChoice: "Zvolte možnost pokračování",
+                regChoice: "Vytvořit nový účet",
+                logChoice: "Mám již účet (Přihlásit)",
+                subReg: "Vytvořte si nový účet v ekosystému",
+                subLog: "Přihlaste se ke svému účtu",
+                name: "Jméno",
+                email: "Email",
+                pass: "Heslo",
+                btnReg: "Zaregistrovat se",
+                btnLog: "Přihlásit se",
+                backBtn: "Zpět",
+                processing: "Zpracovávám...",
+                verifying: "Ověřuji...",
+                successReg: "Účet úspěšně vytvořen! Přesměrovávám...",
+                successLog: "Přihlášení úspěšné! Vítejte zpět.",
+                errorDefault: "Došlo k chybě."
+            },
+            en: {
+                back: "Back Home",
+                subChoice: "Choose how you want to proceed",
+                regChoice: "Create new account",
+                logChoice: "I already have an account (Sign In)",
+                subReg: "Create a new account in the ecosystem",
+                subLog: "Sign in to your account",
+                name: "Name",
+                email: "Email",
+                pass: "Password",
+                btnReg: "Register",
+                btnLog: "Sign In",
+                backBtn: "Back",
+                processing: "Processing...",
+                verifying: "Verifying...",
+                successReg: "Account created successfully! Redirecting...",
+                successLog: "Login successful! Welcome back.",
+                errorDefault: "An error occurred."
+            }
+        };
+
+        let currentLang = localStorage.getItem('zalorforge_lang') || 'cs';
+
+        function updateTexts() {
+            const t = i18n[currentLang];
+            document.getElementById('navBack').textContent = t.back;
+            document.getElementById('subTitle').textContent = t.subChoice;
+            document.getElementById('btnRegChoice').textContent = t.regChoice;
+            document.getElementById('btnLoginChoice').textContent = t.logChoice;
+            document.getElementById('labelName').textContent = t.name;
+            document.getElementById('labelEmailReg').textContent = t.email;
+            document.getElementById('labelPassReg').textContent = t.pass;
+            document.getElementById('labelEmailLog').textContent = t.email;
+            document.getElementById('labelPassLog').textContent = t.pass;
+            document.getElementById('btnSubmitReg').textContent = t.btnReg;
+            document.getElementById('btnSubmitLog').textContent = t.btnLog;
+            document.getElementById('btnBackReg').textContent = t.backBtn;
+            document.getElementById('btnBackLog').textContent = t.backBtn;
+            document.getElementById('langLabel').textContent = currentLang === 'cs' ? 'EN' : 'CS';
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'cs' ? 'en' : 'cs';
+            localStorage.setItem('zalorforge_lang', currentLang);
+            updateTexts();
+        }
+
         function showForm(type) {
+            const t = i18n[currentLang];
             document.getElementById('choiceScreen').style.display = 'none';
             document.getElementById('registerForm').classList.remove('active');
             document.getElementById('loginForm').classList.remove('active');
 
             if (type === 'register') {
                 document.getElementById('registerForm').classList.add('active');
-                document.getElementById('subTitle').textContent = 'Vytvořte si nový účet v ekosystému';
+                document.getElementById('subTitle').textContent = t.subReg;
             } else {
                 document.getElementById('loginForm').classList.add('active');
-                document.getElementById('subTitle').textContent = 'Přihlaste se ke svému účtu';
+                document.getElementById('subTitle').textContent = t.subLog;
             }
         }
 
         function resetToChoice() {
+            const t = i18n[currentLang];
             document.getElementById('choiceScreen').style.display = 'flex';
             document.getElementById('registerForm').classList.remove('active');
             document.getElementById('loginForm').classList.remove('active');
-            document.getElementById('subTitle').textContent = 'Zvolte možnost pokračování';
+            document.getElementById('subTitle').textContent = t.subChoice;
             document.getElementById('regStatus').textContent = '';
             document.getElementById('logStatus').textContent = '';
         }
 
         async function handleAuth(event, action) {
             event.preventDefault();
-            
+            const t = i18n[currentLang];
             const isRegister = action === 'register';
             const statusEl = document.getElementById(isRegister ? 'regStatus' : 'logStatus');
             
@@ -366,11 +459,10 @@
                 payload.name = document.getElementById('regName').value.trim();
             }
 
-            statusEl.textContent = isRegister ? "Zpracovávám..." : "Ověřuji...";
+            statusEl.textContent = isRegister ? t.processing : t.verifying;
             statusEl.className = "status-msg";
 
             try {
-                // Volání zabezpečené Cloudflare Pages Function
                 const response = await fetch('/api/auth', {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -380,18 +472,20 @@
                 const result = await response.json();
                 
                 if (response.ok && result.success) {
-                    statusEl.textContent = isRegister ? "Účet úspěšně vytvořen! Přesměrovávám..." : "Přihlášení úspěšné! Vítejte zpět.";
+                    statusEl.textContent = isRegister ? t.successReg : t.successLog;
                     statusEl.className = "status-msg success";
                     setTimeout(() => window.location.href = "../", 1500);
                 } else {
-                    statusEl.textContent = result.error || "Došlo k chybě.";
+                    statusEl.textContent = result.error || t.errorDefault;
                     statusEl.className = "status-msg error";
                 }
             } catch (err) {
-                statusEl.textContent = "Chyba připojení k serveru.";
+                statusEl.textContent = t.errorDefault;
                 statusEl.className = "status-msg error";
             }
         }
+
+        document.addEventListener("DOMContentLoaded", updateTexts);
     </script>
 </body>
 </html>

@@ -66,6 +66,7 @@
             display: flex;
             gap: 10px;
             align-items: center;
+            position: relative;
         }
 
         .logo {
@@ -103,6 +104,42 @@
             background: var(--accent-gradient);
             color: #ffffff;
             border: none;
+        }
+
+        /* Uživatelské menu (dropdown po přihlášení) */
+        .user-dropdown {
+            position: absolute;
+            top: 45px;
+            left: 0;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            width: 150px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .user-dropdown.active {
+            display: flex;
+        }
+
+        .dropdown-item {
+            background: transparent;
+            border: none;
+            color: var(--danger-color);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--surface-hover);
         }
 
         main {
@@ -309,7 +346,6 @@
             border-radius: 50%;
         }
 
-        /* Responzivita pro mobily */
         @media (max-width: 600px) {
             header {
                 padding: 14px 16px;
@@ -324,10 +360,6 @@
             }
             .form-row {
                 flex-direction: column;
-            }
-            .control-btn {
-                padding: 6px 10px;
-                font-size: 11px;
             }
         }
     </style>
@@ -345,6 +377,9 @@
             <button class="control-btn" onclick="toggleLanguage()">
                 <span id="langLabel">CZ</span>
             </button>
+            <div id="authContainer">
+                <a href="sign-in/" class="control-btn primary" id="signInBtn">Sign In</a>
+            </div>
         </div>
     </header>
 
@@ -404,6 +439,8 @@
                 delete: "Smazat",
                 dark: "Tmavý",
                 light: "Světlý",
+                signIn: "Sign In",
+                signOut: "Odhlásit",
                 months: ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"],
                 days: ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"]
             },
@@ -421,6 +458,8 @@
                 delete: "Delete",
                 dark: "Dark",
                 light: "Light",
+                signIn: "Sign In",
+                signOut: "Sign Out",
                 months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
                 days: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
             }
@@ -434,6 +473,7 @@
 
         document.documentElement.setAttribute('data-theme', currentTheme);
 
+        // --- SYNCHRONIZACE S TURSO DB & LOCALSTORAGE ---
         async function loadData() {
             let local = localStorage.getItem('check_app_data');
             if (local) {
@@ -447,10 +487,10 @@
                         localStorage.setItem('check_app_data', JSON.stringify(appData));
                     }
                 } catch (e) {
-                    console.log("Offline mode");
+                    console.log("Offline režim (Turso nedostupné)");
                 }
             }
-            updateTexts();
+            updateUI();
             renderTasks();
             renderCalendar();
         }
@@ -465,8 +505,53 @@
                     body: JSON.stringify({ email: userEmail, data: appData })
                 });
             } catch (e) {
-                console.log("Saved locally only");
+                console.log("Uloženo pouze lokálně");
             }
+        }
+
+        // --- SPRÁVA AUTENTIZACE (SIGN IN / SIGN OUT) ---
+        function updateAuthUI() {
+            const authContainer = document.getElementById('authContainer');
+            const savedName = localStorage.getItem('zalorforge_name');
+            const savedEmail = localStorage.getItem('zalorforge_email');
+            const t = i18n[currentLang];
+
+            if (savedEmail || savedName) {
+                const displayName = savedName || (savedEmail ? savedEmail.split('@')[0] : 'User');
+                authContainer.innerHTML = `
+                    <button class="control-btn primary" onclick="toggleDropdown(event)">
+                        👤 ${displayName} ▾
+                    </button>
+                    <div id="userDropdown" class="user-dropdown">
+                        <button class="dropdown-item" onclick="handleSignOut()">${t.signOut}</button>
+                    </div>
+                `;
+            } else {
+                authContainer.innerHTML = `
+                    <a href="sign-in/" class="control-btn primary" id="signInBtn">${t.signIn}</a>
+                `;
+            }
+        }
+
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('active');
+            }
+        }
+
+        window.addEventListener('click', () => {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        function handleSignOut() {
+            localStorage.removeItem('zalorforge_name');
+            localStorage.removeItem('zalorforge_email');
+            updateAuthUI();
         }
 
         function switchTab(tab) {
@@ -487,18 +572,18 @@
             currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', currentTheme);
             localStorage.setItem('check_theme', currentTheme);
-            updateTexts();
+            updateUI();
         }
 
         function toggleLanguage() {
             currentLang = currentLang === 'cs' ? 'en' : 'cs';
             localStorage.setItem('check_lang', currentLang);
-            updateTexts();
+            updateUI();
             renderTasks();
             renderCalendar();
         }
 
-        function updateTexts() {
+        function updateUI() {
             const t = i18n[currentLang];
             document.getElementById('tabTasksBtn').textContent = t.tasks;
             document.getElementById('tabCalendarBtn').textContent = t.calendar;
@@ -510,8 +595,10 @@
             document.getElementById('langLabel').textContent = currentLang.toUpperCase();
             document.getElementById('themeLabel').textContent = currentTheme === 'dark' ? t.dark : t.light;
             document.getElementById('eventHeader').textContent = `${t.dayEvents} (${selectedDateStr})`;
+            updateAuthUI();
         }
 
+        // --- ÚKOLY ---
         function addTask() {
             const input = document.getElementById('taskInput');
             const dateInput = document.getElementById('taskDate');
@@ -565,6 +652,7 @@
             `).join('');
         }
 
+        // --- KALENDÁŘ ---
         function renderCalendar() {
             const grid = document.getElementById('calendarGrid');
             const monthYear = document.getElementById('calMonthYear');
@@ -607,7 +695,7 @@
 
         function selectDate(dateStr) {
             selectedDateStr = dateStr;
-            updateTexts();
+            updateUI();
             renderEventsForSelectedDate();
         }
 

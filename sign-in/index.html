@@ -6,15 +6,15 @@
     <title>ZalorForge — Sign In</title>
     <style>
         :root[data-theme="dark"] {
-            --bg-color: #0d1117;
-            --surface-color: #161b22;
-            --surface-hover: #1f242c;
-            --text-color: #f0f6fc;
-            --text-secondary: #8b949e;
-            --border-color: #30363d;
-            --accent-color: #58a6ff;
-            --accent-gradient: linear-gradient(135deg, #58a6ff, #bc8cff);
-            --shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.6);
+            --bg-color: #090d16;
+            --surface-color: #111827;
+            --surface-hover: #1f293d;
+            --text-color: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --border-color: #1f293d;
+            --accent-color: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
             --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -27,7 +27,7 @@
             --border-color: #e2e8f0;
             --accent-color: #2563eb;
             --accent-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -58,13 +58,7 @@
             padding: 24px 32px;
             align-items: center;
             width: 100%;
-            max-width: 1100px;
-        }
-
-        .header-left {
-            display: flex;
-            gap: 12px;
-            align-items: center;
+            max-width: 1200px;
         }
 
         .back-link {
@@ -74,7 +68,7 @@
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             transition: color 0.2s;
         }
 
@@ -83,18 +77,18 @@
         }
 
         .back-link svg {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             stroke: currentColor;
             fill: none;
-            stroke-width: 2;
+            stroke-width: 2.2;
         }
 
         .control-btn {
             background: var(--surface-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 6px 12px;
+            padding: 8px 14px;
             font-size: 12px;
             font-weight: 600;
             border-radius: 20px;
@@ -102,6 +96,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             transition: var(--transition);
         }
 
@@ -118,23 +113,23 @@
             flex-grow: 1;
             padding: 20px;
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
         }
 
         .card {
             background-color: var(--surface-color);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 32px;
+            border-radius: 28px;
+            padding: 36px 32px;
             width: 100%;
             box-shadow: var(--shadow);
             transition: var(--transition);
         }
 
         .logo-title {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 800;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
             background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -146,20 +141,21 @@
             font-size: 13px;
             color: var(--text-secondary);
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 30px;
+            line-height: 1.4;
         }
 
         .choice-screen {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
 
         .choice-btn {
             background-color: var(--bg-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 16px;
+            padding: 16px 20px;
             border-radius: 16px;
             font-size: 14px;
             font-weight: 600;
@@ -180,17 +176,28 @@
             background: var(--accent-gradient);
             color: #ffffff;
             border: none;
-            box-shadow: 0 4px 15px rgba(88, 166, 255, 0.25);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .choice-btn.primary:hover {
+            opacity: 0.95;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
         }
 
         .form-screen {
             display: none;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
 
         .form-screen.active {
             display: flex;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .input-group {
@@ -208,7 +215,7 @@
 
         .text-input {
             width: 100%;
-            height: 48px;
+            height: 50px;
             background-color: var(--bg-color);
             border: 1px solid var(--border-color);
             border-radius: 14px;
@@ -221,21 +228,21 @@
 
         .text-input:focus {
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
         }
 
         .submit-btn {
             background: var(--accent-gradient);
             color: #ffffff;
             border: none;
-            height: 48px;
+            height: 50px;
             border-radius: 14px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            margin-top: 8px;
-            box-shadow: 0 4px 15px rgba(88, 166, 255, 0.25);
+            margin-top: 6px;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
         }
 
         .submit-btn:hover {
@@ -251,7 +258,8 @@
             font-weight: 500;
             cursor: pointer;
             text-align: center;
-            margin-top: 12px;
+            margin-top: 8px;
+            padding: 6px;
             transition: color 0.2s;
         }
 
@@ -262,15 +270,16 @@
         .status-msg {
             font-size: 12px;
             text-align: center;
-            min-height: 18px;
-            margin-top: 10px;
+            min-height: 20px;
+            margin-top: 4px;
+            font-weight: 500;
         }
 
-        .status-msg.error { color: #f87171; }
-        .status-msg.success { color: #4ade80; }
+        .status-msg.error { color: #ef4444; }
+        .status-msg.success { color: #22c55e; }
 
         footer {
-            padding: 20px 32px;
+            padding: 24px 32px;
             color: var(--text-secondary);
             font-size: 12px;
             text-align: center;
@@ -278,7 +287,7 @@
 
         @media (max-width: 600px) {
             header { padding: 16px 20px; }
-            .card { padding: 24px 20px; border-radius: 20px; }
+            .card { padding: 28px 22px; border-radius: 24px; }
         }
     </style>
 </head>
@@ -304,11 +313,11 @@
             <div id="choiceScreen" class="choice-screen">
                 <button class="choice-btn primary" onclick="showForm('register')">
                     <span id="btnRegChoice">Vytvořit nový účet</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </button>
                 <button class="choice-btn" onclick="showForm('login')">
                     <span id="btnLoginChoice">Mám již účet (Přihlásit)</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
                 </button>
             </div>
 
@@ -347,7 +356,7 @@
     </main>
 
     <footer>
-        © ZalorForge Project • Cloudflare Functions & Turso DB
+        © ZalorForge Project • Cloudflare & Turso DB
     </footer>
 
     <script>
@@ -357,7 +366,7 @@
                 subChoice: "Zvolte možnost pokračování",
                 regChoice: "Vytvořit nový účet",
                 logChoice: "Mám již účet (Přihlásit)",
-                subReg: "Vytvořte si nový účet v ekosystému",
+                subReg: "Založte si nový účet v ekosystému",
                 subLog: "Přihlaste se ke svému účtu",
                 name: "Jméno",
                 email: "Email",
@@ -369,7 +378,7 @@
                 verifying: "Ověřuji...",
                 successReg: "Účet úspěšně vytvořen! Přesměrovávám...",
                 successLog: "Přihlášení úspěšné! Vítejte zpět.",
-                errorDefault: "Došlo k chybě."
+                errorDefault: "Došlo k chybě, zkuste to prosím znovu."
             },
             en: {
                 back: "Back Home",
@@ -388,7 +397,7 @@
                 verifying: "Verifying...",
                 successReg: "Account created successfully! Redirecting...",
                 successLog: "Login successful! Welcome back.",
-                errorDefault: "An error occurred."
+                errorDefault: "An error occurred, please try again."
             }
         };
 
@@ -416,6 +425,15 @@
             currentLang = currentLang === 'cs' ? 'en' : 'cs';
             localStorage.setItem('zalorforge_lang', currentLang);
             updateTexts();
+        }
+
+        // Načtení uloženého e-mailu z LocalStorage při startu
+        function loadSavedEmail() {
+            const savedEmail = localStorage.getItem('zalorforge_saved_email');
+            if (savedEmail) {
+                document.getElementById('logEmail').value = savedEmail;
+                document.getElementById('regEmail').value = savedEmail;
+            }
         }
 
         function showForm(type) {
@@ -449,9 +467,12 @@
             const isRegister = action === 'register';
             const statusEl = document.getElementById(isRegister ? 'regStatus' : 'logStatus');
             
+            // Úprava e-mailu na malé písmeno a ořezání mezer (šetří místo a zajišťuje čistotu v DB)
+            const cleanEmail = (isRegister ? document.getElementById('regEmail').value : document.getElementById('logEmail').value).trim().toLowerCase();
+
             const payload = {
                 action: action,
-                email: document.getElementById(isRegister ? 'regEmail' : 'logEmail').value.trim().toLowerCase(),
+                email: cleanEmail,
                 password: document.getElementById(isRegister ? 'regPassword' : 'logPassword').value
             };
 
@@ -472,6 +493,9 @@
                 const result = await response.json();
                 
                 if (response.ok && result.success) {
+                    // Uložení e-mailu do LocalStorage pro příští přihlášení
+                    localStorage.setItem('zalorforge_saved_email', cleanEmail);
+
                     statusEl.textContent = isRegister ? t.successReg : t.successLog;
                     statusEl.className = "status-msg success";
                     setTimeout(() => window.location.href = "../", 1500);
@@ -485,7 +509,10 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", updateTexts);
+        document.addEventListener("DOMContentLoaded", () => {
+            updateTexts();
+            loadSavedEmail();
+        });
     </script>
 </body>
 </html>

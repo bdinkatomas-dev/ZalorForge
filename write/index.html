@@ -1,19 +1,36 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZalorForge Wrive — Dokumenty</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zalorforge — Write</title>
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --surface-color: #161b22;
-            --surface-hover: #1f242c;
-            --text-color: #f0f6fc;
-            --text-secondary: #8b949e;
-            --border-color: #30363d;
-            --accent-color: #58a6ff;
-            --danger-color: #ff7b72;
+        :root[data-theme="dark"] {
+            --bg-color: #0b0f19;
+            --surface-color: #131b2e;
+            --surface-hover: #1c2640;
+            --text-color: #f3f6fc;
+            --text-secondary: #8b9ab3;
+            --border-color: #26334f;
+            --accent-color: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6, #6366f1);
+            --editor-bg: #131b2e;
+            --paper-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            --modal-bg: rgba(11, 15, 25, 0.8);
+        }
+
+        :root[data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --surface-color: #ffffff;
+            --surface-hover: #f8fafc;
+            --text-color: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #cbd5e1;
+            --accent-color: #2563eb;
+            --accent-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
+            --editor-bg: #ffffff;
+            --paper-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+            --modal-bg: rgba(15, 23, 42, 0.5);
         }
 
         * {
@@ -21,588 +38,481 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            display: flex;
-            flex-direction: column;
             height: 100vh;
+            height: 100dvh;
             overflow: hidden;
-        }
-
-        /* Hlavní layout aplikace (přepínání pohledů) */
-        .view {
-            display: none;
-            flex-direction: column;
-            flex-grow: 1;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .view.active {
             display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* --- STYL 1: DOMOVSKÁ OBRAZOVKA (Google Docs Home UI) --- */
-        header.home-header {
+        /* Hlavní layout aplikace */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        /* Top ribbon (Word style header) */
+        .ribbon {
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .ribbon-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 24px;
-            background-color: var(--surface-color);
-            border-bottom: 1px solid var(--border-color);
         }
 
-        .header-brand {
+        .brand-title {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .header-brand h1 {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        .search-container {
-            flex-grow: 1;
-            max-width: 600px;
-            margin: 0 40px;
-            position: relative;
-        }
-
-        .home-search {
-            width: 100%;
-            height: 44px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 22px;
-            padding: 0 20px 0 45px;
-            color: var(--text-color);
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .home-search:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.15);
-        }
-
-        .home-search-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
-            fill: var(--text-secondary);
-        }
-
-        .home-main {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 32px 48px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .templates-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 16px;
-            margin-bottom: 40px;
-        }
-
-        .template-card {
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-
-        .template-card:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-
-        .template-preview {
-            height: 110px;
-            background-color: var(--bg-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 24px;
-        }
-
-        .template-name {
-            padding: 10px 12px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-color);
-        }
-
-        .docs-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .doc-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s, border-color 0.2s;
-        }
-
-        .doc-row:hover {
-            background-color: var(--surface-hover);
-            border-color: var(--accent-color);
-        }
-
-        .doc-row-info {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .doc-row-title {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-color);
-        }
-
-        .doc-row-date {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .doc-row-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-icon {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 4px;
-            transition: color 0.2s, background 0.2s;
-        }
-
-        .btn-icon:hover {
-            color: var(--text-color);
-            background-color: var(--border-color);
-        }
-
-        .btn-icon.danger:hover {
-            color: var(--danger-color);
-        }
-
-
-        /* --- STYL 2: EDITOR (Word-like rozhraní) --- */
-        header.editor-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: var(--surface-color);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .editor-top-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .btn-back {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-back:hover {
-            background-color: var(--surface-hover);
-            border-color: var(--accent-color);
+        .brand-title h1 {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .doc-title-input {
             background: transparent;
             border: 1px solid transparent;
             color: var(--text-color);
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             padding: 4px 8px;
-            border-radius: 4px;
+            border-radius: 6px;
             outline: none;
+            width: 250px;
+            transition: all 0.2s;
         }
 
         .doc-title-input:hover, .doc-title-input:focus {
-            background: var(--bg-color);
             border-color: var(--border-color);
+            background: var(--surface-hover);
         }
 
+        .ribbon-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--accent-color);
+            background: var(--surface-hover);
+        }
+
+        /* Toolbar / Nástrojová lišta editoru */
         .toolbar {
             display: flex;
-            gap: 4px;
-            padding: 8px 20px;
-            background-color: var(--surface-color);
-            border-bottom: 1px solid var(--border-color);
-            align-items: center;
             flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            padding-top: 4px;
+            border-top: 1px solid var(--border-color);
         }
 
-        .toolbar select, .toolbar button {
+        .tool-group {
+            display: flex;
+            gap: 2px;
+            align-items: center;
             background: var(--bg-color);
-            color: var(--text-color);
             border: 1px solid var(--border-color);
-            padding: 6px 10px;
+            border-radius: 8px;
+            padding: 2px;
+        }
+
+        .tool-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            width: 30px;
+            height: 30px;
             border-radius: 6px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 13px;
+            font-weight: 700;
+            transition: background 0.15s;
         }
 
-        .toolbar button:hover, .toolbar select:hover {
+        .tool-btn:hover {
             background: var(--surface-hover);
-            border-color: var(--accent-color);
+            color: var(--accent-color);
         }
 
-        .editor-workspace {
+        .tool-btn.active {
+            background: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .tool-select {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 0 6px;
+            height: 30px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .tool-select option {
+            background: var(--surface-color);
+            color: var(--text-color);
+        }
+
+        /* Workspace / Pracovní plocha (stránka) */
+        .workspace {
             flex-grow: 1;
+            overflow-y: auto;
+            padding: 30px 20px;
             display: flex;
             justify-content: center;
-            padding: 30px;
-            overflow-y: auto;
+            align-items: flex-start;
             background-color: var(--bg-color);
         }
 
-        .editor-page {
-            width: 100%;
-            max-width: 800px;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 60px;
-            min-height: 100%;
-            outline: none;
+        .page {
+            background-color: var(--editor-bg);
             color: var(--text-color);
+            width: 100%;
+            max-width: 850px;
+            min-height: 1056px; /* Poměr A4 */
+            padding: 60px 70px;
+            border-radius: 4px;
+            box-shadow: var(--paper-shadow);
+            border: 1px solid var(--border-color);
+            outline: none;
             font-size: 15px;
-            line-height: 1.8;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            line-height: 1.6;
+            word-break: break-word;
         }
 
-        .editor-page h1 { font-size: 32px; margin-bottom: 16px; }
-        .editor-page h2 { font-size: 24px; margin-bottom: 12px; }
-        .editor-page p { margin-bottom: 12px; }
-
-        .save-indicator {
-            font-size: 12px;
+        .page[contenteditable]:empty:before {
+            content: attr(data-placeholder);
             color: var(--text-secondary);
+            pointer-events: none;
+            display: block;
+        }
+
+        /* Status bar / Spodní lišta */
+        .status-bar {
+            background-color: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            padding: 6px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .stats-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        /* Toast oznámení */
+        .toast {
+            position: fixed;
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%) translateY(50px);
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: var(--paper-shadow);
+            z-index: 2000;
+            opacity: 0;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Responzivita pro mobily */
+        @media (max-width: 768px) {
+            .ribbon {
+                padding: 10px 12px;
+            }
+            .doc-title-input {
+                width: 150px;
+            }
+            .workspace {
+                padding: 10px 6px;
+            }
+            .page {
+                padding: 24px 18px;
+                min-height: 100vh;
+                border-radius: 0;
+                border: none;
+            }
+            .toolbar {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 6px;
+            }
+            .toolbar::-webkit-scrollbar {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- 1. POHLED: HLAVNÍ MENU (Seznam dokumentů) -->
-    <div id="homeView" class="view active">
-        <header class="home-header">
-            <div class="header-brand">
-                <h1>ZalorForge Wrive</h1>
+    <div class="app-container">
+        <!-- Horní panel (Ribbon) -->
+        <header class="ribbon">
+            <div class="ribbon-top">
+                <div class="brand-title">
+                    <h1>Zalorforge Write</h1>
+                    <input type="text" class="doc-title-input" id="docTitle" value="Bez názvu dokumentu">
+                </div>
+                <div class="ribbon-controls">
+                    <button class="icon-btn" onclick="toggleLanguage()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        <span id="langBtnText">CZ / EN</span>
+                    </button>
+                    <button class="icon-btn" onclick="toggleTheme()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                        <span id="themeBtnText">Theme</span>
+                    </button>
+                </div>
             </div>
-            <div class="search-container">
-                <svg class="home-search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                <input type="text" id="searchDocs" class="home-search" placeholder="Hledat v dokumentech...">
+
+            <!-- Nástrojová lišta (Toolbar) -->
+            <div class="toolbar">
+                <div class="tool-group">
+                    <select class="tool-select" id="fontFamilySelect" onchange="formatDoc('fontName', this.value)">
+                        <option value="Arial">Arial</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Courier New">Courier New</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Verdana">Verdana</option>
+                    </select>
+                    <select class="tool-select" id="fontSizeSelect" onchange="formatDoc('fontSize', this.value)">
+                        <option value="3">12px</option>
+                        <option value="4" selected>14px</option>
+                        <option value="5">18px</option>
+                        <option value="6">24px</option>
+                        <option value="7">32px</option>
+                    </select>
+                </div>
+
+                <div class="tool-group">
+                    <button class="tool-btn" onclick="formatDoc('bold')" title="Tučné"><b>B</b></button>
+                    <button class="tool-btn" onclick="formatDoc('italic')" title="Kurzíva"><i>I</i></button>
+                    <button class="tool-btn" onclick="formatDoc('underline')" title="Podtržené"><u>U</u></button>
+                    <button class="tool-btn" onclick="formatDoc('strikeThrough')" title="Přeškrtnuté"><s>S</s></button>
+                </div>
+
+                <div class="tool-group">
+                    <button class="tool-btn" onclick="formatDoc('justifyLeft')" title="Zarovnat vlevo">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+                    </button>
+                    <button class="tool-btn" onclick="formatDoc('justifyCenter')" title="Zarovnat na střed">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="6" x2="3" y2="6"/><line x1="19" y1="10" x2="5" y2="10"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="19" y1="18" x2="5" y2="18"/></svg>
+                    </button>
+                    <button class="tool-btn" onclick="formatDoc('justifyRight')" title="Zarovnat vpravo">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg>
+                    </button>
+                </div>
+
+                <div class="tool-group">
+                    <button class="tool-btn" onclick="formatDoc('insertUnorderedList')" title="Odrážkový seznam">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    </button>
+                    <button class="tool-btn" onclick="formatDoc('insertOrderedList')" title="Číslovaný seznam">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+                    </button>
+                </div>
+
+                <div class="tool-group">
+                    <button class="icon-btn" onclick="insertLink()" style="border:none; background:transparent; padding: 4px 8px;" id="btnLink">Odkaz</button>
+                    <button class="icon-btn" onclick="clearFormatting()" style="border:none; background:transparent; padding: 4px 8px;" id="btnClear">Vymazat formát</button>
+                </div>
             </div>
-            <div style="font-size: 13px; color: var(--text-secondary);">Lokální úložiště aktivní</div>
         </header>
 
-        <div class="home-main">
-            <div class="section-header">
-                <span class="section-title">Začít nový dokument</span>
-            </div>
-            <div class="templates-row">
-                <div class="template-card" onclick="createNewDoc('')">
-                    <div class="template-preview">📄</div>
-                    <div class="template-name">Prázdný dokument</div>
-                </div>
-                <div class="template-card" onclick="createNewDoc('<h1>Zápis ze schůzky</h1><p>Datum: </p><p>Účastníci: </p><h2>Agenda</h2><ul><li></li></ul>')">
-                    <div class="template-preview">📅</div>
-                    <div class="template-name">Schůzka</div>
-                </div>
-                <div class="template-card" onclick="createNewDoc('<h1>Projektový plán</h1><p>Cíl projektu:</p><h2>Fáze</h2><ol><li>Analýza</li><li>Vývoj</li><li>Testování</li></ol>')">
-                    <div class="template-preview">📊</div>
-                    <div class="template-name">Projektový plán</div>
-                </div>
-            </div>
+        <!-- Pracovní plocha (Editor / Papír) -->
+        <main class="workspace">
+            <div class="page" id="editor" contenteditable="true" data-placeholder="Zaněte psát svůj dokument..." oninput="updateStats()"></div>
+        </main>
 
-            <div class="section-header">
-                <span class="section-title">Poslední dokumenty</span>
-                <button onclick="createNewDoc('')" style="background: var(--accent-color); color: #0d1117; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px;">+ Nový dokument</button>
+        <!-- Spodní stavová lišta -->
+        <footer class="status-bar">
+            <div class="stats-group">
+                <span id="wordCountLabel">Slova: 0</span>
+                <span id="charCountLabel">Znaky: 0</span>
             </div>
-            <div id="docsList" class="docs-list">
-                <!-- Zde se dynamicky vygenerují dokumenty -->
-            </div>
-        </div>
+            <div>Zalorforge Write Engine v1.0</div>
+        </footer>
     </div>
 
-
-    <!-- 2. POHLED: EDITOR DOKUMENTU -->
-    <div id="editorView" class="view">
-        <header class="editor-header">
-            <div class="editor-top-left">
-                <button class="btn-back" onclick="returnToHome()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                    Zpět
-                </button>
-                <input type="text" id="docTitle" class="doc-title-input" placeholder="Název dokumentu">
-            </div>
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <span id="saveStatus" class="save-indicator">Uloženo</span>
-                <button onclick="exportDoc('html')" style="background: var(--surface-hover); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;">Export HTML</button>
-                <button onclick="exportDoc('txt')" style="background: var(--surface-hover); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;">Export TXT</button>
-            </div>
-        </header>
-
-        <div class="toolbar">
-            <button onclick="format('bold')"><b>B</b></button>
-            <button onclick="format('italic')"><i>I</i></button>
-            <button onclick="format('underline')"><u>U</u></button>
-            <button onclick="format('strikeThrough')"><s>S</s></button>
-            <span style="width: 1px; height: 20px; background: var(--border-color); margin: 0 4px;"></span>
-            <select onchange="format('formatBlock', this.value); this.selectedIndex=0;">
-                <option value="" disabled selected>Styl textu</option>
-                <option value="<h1>">Nadpis 1</option>
-                <option value="<h2>">Nadpis 2</option>
-                <option value="<p>">Odstavec</option>
-            </select>
-            <button onclick="format('insertUnorderedList')">• Seznam</button>
-            <button onclick="format('insertOrderedList')">1. Seznam</button>
-            <span style="width: 1px; height: 20px; background: var(--border-color); margin: 0 4px;"></span>
-            <button onclick="format('justifyLeft')">Vlevo</button>
-            <button onclick="format('justifyCenter')">Na střed</button>
-            <button onclick="format('justifyRight')">Vpravo</button>
-        </div>
-
-        <div class="editor-workspace">
-            <div id="editor" class="editor-page" contenteditable="true" placeholder="Začněte psát obsah..."></div>
-        </div>
-    </div>
+    <!-- Toast oznámení -->
+    <div class="toast" id="toastMessage"></div>
 
     <script>
-        // Správa stavu aplikací a lokálního úložiště
-        const STORAGE_KEY = 'zalorforge_wrive_documents_v1';
-        let currentDocId = null;
-
-        function getDocuments() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            return data ? JSON.parse(data) : [];
-        }
-
-        function saveDocuments(docs) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(docs));
-        }
-
-        // Vykreslení seznamu dokumentů na domovské stránce
-        function renderDocsList(filter = '') {
-            const docs = getDocuments();
-            const listContainer = document.getElementById('docsList');
-            
-            const filtered = docs.filter(d => d.title.toLowerCase().includes(filter.toLowerCase()));
-            
-            if (filtered.length === 0) {
-                listContainer.innerHTML = `<div style="color: var(--text-secondary); text-align: center; padding: 40px;">Žádné dokumenty nenalezeny</div>`;
-                return;
+        const i18n = {
+            cs: {
+                placeholder: "Začněte psát svůj dokument...",
+                untitled: "Bez názvu dokumentu",
+                words: "Slova",
+                chars: "Znaky",
+                linkPrompt: "Zadejte URL adresu odkazu:",
+                toastSaved: "Uloženo lokálně",
+                theme: "Motiv"
+            },
+            en: {
+                placeholder: "Start typing your document...",
+                untitled: "Untitled Document",
+                words: "Words",
+                chars: "Characters",
+                linkPrompt: "Enter the link URL:",
+                toastSaved: "Saved locally",
+                theme: "Theme"
             }
+        };
 
-            // Seřazení od nejnovějších
-            filtered.sort((a, b) => b.updatedAt - a.updatedAt);
+        let currentLang = localStorage.getItem('zalorforge_write_lang') || 'cs';
+        let currentTheme = localStorage.getItem('zalorforge_write_theme') || 'dark';
 
-            listContainer.innerHTML = filtered.map(doc => `
-                <div class="doc-row" onclick="openDoc('${doc.id}')">
-                    <div class="doc-row-info">
-                        <span style="font-size: 20px;">📄</span>
-                        <div>
-                            <div class="doc-row-title">${escapeHtml(doc.title)}</div>
-                            <div class="doc-row-date">Upraveno: ${new Date(doc.updatedAt).toLocaleDateString('cs-CZ')} ${new Date(doc.updatedAt).toLocaleTimeString('cs-CZ', {hour: '2-digit', minute:'2-digit'})}</div>
-                        </div>
-                    </div>
-                    <div class="doc-row-actions" onclick="event.stopPropagation()">
-                        <button class="btn-icon danger" onclick="deleteDoc('${doc.id}')" title="Smazat">🗑️</button>
-                    </div>
-                </div>
-            `).join('');
-        }
+        document.documentElement.setAttribute('data-theme', currentTheme);
 
-        function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
-
-        // Navigace mezi pohledy
-        function switchView(viewName) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            if (viewName === 'home') {
-                document.getElementById('homeView').classList.add('active');
-                renderDocsList();
-            } else if (viewName === 'editor') {
-                document.getElementById('editorView').classList.add('active');
-            }
-        }
-
-        // Vytvoření nového dokumentu
-        function createNewDoc(initialContent = '') {
-            const docs = getDocuments();
-            const newDoc = {
-                id: 'doc_' + Date.now(),
-                title: 'Bez názvu',
-                content: initialContent,
-                updatedAt: Date.now()
-            };
-            docs.push(newDoc);
-            saveDocuments(docs);
-            openDoc(newDoc.id);
-        }
-
-        // Otevření dokumentu v editoru
-        function openDoc(id) {
-            const docs = getDocuments();
-            const doc = docs.find(d => d.id === id);
-            if (!doc) return;
-
-            currentDocId = doc.id;
-            document.getElementById('docTitle').value = doc.title;
-            document.getElementById('editor').innerHTML = doc.content;
+        function initEditor() {
+            const editor = document.getElementById('editor');
+            const titleInput = document.getElementById('docTitle');
             
-            switchView('editor');
+            // Načtení uloženého obsahu z localStorage
+            const savedContent = localStorage.getItem('zalorforge_write_content');
+            const savedTitle = localStorage.getItem('zalorforge_write_title');
+
+            if (savedContent) editor.innerHTML = savedContent;
+            if (savedTitle) titleInput.value = savedTitle;
+
+            updateStats();
+            renderUI();
         }
 
-        // Uložení aktuálního dokumentu
-        let autoSaveTimer;
-        function triggerAutoSave() {
-            const statusEl = document.getElementById('saveStatus');
-            statusEl.textContent = 'Ukládá se...';
-            
-            clearTimeout(autoSaveTimer);
-            autoSaveTimer = setTimeout(() => {
-                if (!currentDocId) return;
-                const docs = getDocuments();
-                const index = docs.findIndex(d => d.id === currentDocId);
-                if (index !== -1) {
-                    docs[index].title = document.getElementById('docTitle').value || 'Bez názvu';
-                    docs[index].content = document.getElementById('editor').innerHTML;
-                    docs[index].updatedAt = Date.now();
-                    saveDocuments(docs);
-                    statusEl.textContent = 'Všechny změny uloženy';
-                }
-            }, 500);
-        }
-
-        // Smazání dokumentu
-        function deleteDoc(id) {
-            if (confirm('Opravdu chcete tento dokument smazat?')) {
-                let docs = getDocuments();
-                docs = docs.filter(d => d.id !== id);
-                saveDocuments(docs);
-                renderDocsList();
-            }
-        }
-
-        // Návrat na domovskou stránku
-        function returnToHome() {
-            currentDocId = null;
-            switchView('home');
-        }
-
-        // Formátovací nástroje pro editor
-        function format(command, value = null) {
-            document.execCommand(command, false, value);
+        function formatDoc(cmd, value = null) {
+            document.execCommand(cmd, false, value);
             document.getElementById('editor').focus();
-            triggerAutoSave();
         }
 
-        // Export dokumentu
-        function exportDoc(type) {
-            const title = document.getElementById('docTitle').value || 'dokument';
-            const content = document.getElementById('editor').innerHTML;
-            let blob, filename;
-
-            if (type === 'html') {
-                const fullHtml = `<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><title>${title}</title></head><body>${content}</body></html>`;
-                blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
-                filename = `${title}.html`;
-            } else if (type === 'txt') {
-                const textContent = document.getElementById('editor').innerText;
-                blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
-                filename = `${title}.txt`;
-            }
-
-            if (blob) {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+        function insertLink() {
+            const t = i18n[currentLang];
+            const url = prompt(t.linkPrompt, "https://");
+            if (url) {
+                formatDoc('createLink', url);
             }
         }
 
-        // Event listenery pro automatické ukládání a vyhledávání
-        document.getElementById('editor').addEventListener('input', triggerAutoSave);
-        document.getElementById('docTitle').addEventListener('input', triggerAutoSave);
-        document.getElementById('searchDocs').addEventListener('input', (e) => {
-            renderDocsList(e.target.value);
+        function clearFormatting() {
+            formatDoc('removeFormat');
+        }
+
+        function updateStats() {
+            const editor = document.getElementById('editor');
+            const text = editor.innerText || "";
+            
+            const words = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+            const chars = text.length;
+
+            const t = i18n[currentLang];
+            document.getElementById('wordCountLabel').textContent = `${t.words}: ${words}`;
+            document.getElementById('charCountLabel').textContent = `${t.chars}: ${chars}`;
+
+            // Auto-save do localStorage
+            localStorage.setItem('zalorforge_write_content', editor.innerHTML);
+            localStorage.setItem('zalorforge_write_title', document.getElementById('docTitle').value);
+        }
+
+        document.getElementById('docTitle').addEventListener('input', () => {
+            localStorage.setItem('zalorforge_write_title', document.getElementById('docTitle').value);
         });
 
-        // Inicializace při načtení
-        window.addEventListener('DOMContentLoaded', () => {
-            // Pokud úložiště je prázdné, vytvoříme vzorový dokument
-            const docs = getDocuments();
-            if (docs.length === 0) {
-                docs.push({
-                    id: 'doc_sample',
-                    title: 'Vítejte v ZalorForge Wrive',
-                    content: '<h1>Vítejte!</h1><p>Tento textový editor ukládá vše do vašeho lokálního úložiště (LocalStorage).</p><p>Můžete upravovat text, měnit nadpisy a nahoře spravovat dokumenty.</p>',
-                    updatedAt: Date.now()
-                });
-                saveDocuments(docs);
-            }
-            renderDocsList();
-        });
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('zalorforge_write_theme', currentTheme);
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'cs' ? 'en' : 'cs';
+            localStorage.setItem('zalorforge_write_lang', currentLang);
+            renderUI();
+            updateStats();
+        }
+
+        function renderUI() {
+            const t = i18n[currentLang];
+            document.getElementById('langBtnText').textContent = currentLang.toUpperCase();
+            document.getElementById('editor').setAttribute('data-placeholder', t.placeholder);
+            document.getElementById('btnLink').textContent = currentLang === 'cs' ? 'Odkaz' : 'Link';
+            document.getElementById('btnClear').textContent = currentLang === 'cs' ? 'Vymazat formát' : 'Clear format';
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toastMessage');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
+        }
+
+        // Spuštění při načtení
+        window.onload = () => {
+            initEditor();
+        };
     </script>
 </body>
 </html>
